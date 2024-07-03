@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+@layer components{
+  .NavbarLi {
+    @apply hover:text-hoverColor cursor-pointer duration-300;
+  }
+}
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+.bg-PurpulFil {
+  
+  height: 80px; /* Hauteur de la bande */
+ 
+}
+
+
+.navbar {
+  margin-bottom: 40px; /* Ajoute une marge externe en bas */
+}
+
+.footer {
+  margin-top: 20px; /* Ajoute une marge externe en haut */
+}
+
+/* formulaire de contact */
+
+.contact-form-container {
+  text-align: center;
+  margin: 40px auto; /* Ajoute des marges extérieures en haut et en bas */
+}
+
+.contact-title {
+  font-size: 24px; /* Augmente la taille du texte */
+  font-weight: bold; /* Met le texte en gras */
+  margin-top: 20px; /* Marge supérieure */
+  margin-bottom: 20px; /* Marge inférieure */
+}
+
+.contact-description {
+  margin-bottom: 60px; /* Ajoute une marge inférieure pour espacer le texte du premier champ */
+}
+
+.contact-form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.contact-input,
+.contact-textarea {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-bottom: 2px solid rgba(3, 112, 225, 1);
+  outline: none;
+}
+
+.contact-textarea {
+  resize: none;
+}
+
+.contact-submit-button {
+  background-color: rgba(3, 112, 225, 1);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.contact-submit-button:hover {
+  background-color: rgba(2, 75, 150, 1); /* Changer la couleur au survol */
+}
+.footer {
+  position: relative;
+  margin-top: 4rem;
+  background-color: white;
+}
+
+.footer-logo {
+  width: 200px;
+  height: auto;
+  margin-right: 20px;
+}
+
+.footer-left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.footer-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.footer-logotype {
+  width: 100px; /* Adjust the width as needed */
+  height: auto;
+}
+
+.bg-PurpulFil {
+  height: 20px;
+  background-color: #yourcolor; /* Replace #yourcolor with your actual color code */
+}
+
+.text-customBlue {
+  color: #yourcolor; /* Replace #yourcolor with your actual color code */
+}
+
+.bg-customBlue {
+  background-color: #yourcolor; /* Replace #yourcolor with your actual color code */
+}
+
+.footer .py-2 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.footer .mb-20 {
+  margin-bottom: 5rem;
+}
+
+.footer .mt-4 {
+  margin-top: 1rem;
+}
+
+.footer .relative {
+  position: relative;
+}
+
+.footer .absolute {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-letter {
+  display: inline-block;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.animate-word {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
