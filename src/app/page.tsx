@@ -2,8 +2,8 @@
 import React from "react";
 import './globals.css';
 import 'tailwindcss/tailwind.css';
-import Posts from "./components/posts";
-import Post from "./components/post";
+import Posts from "./components/Posts";
+import Post from "./components/Post";
 import Container from "@mui/material/Container";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PushUpContainer from "../app/components/PushUpContainer";
