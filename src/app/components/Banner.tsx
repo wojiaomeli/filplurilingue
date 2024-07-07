@@ -26,11 +26,15 @@ const ImageContainer = styled.div`
   cursor: pointer;
   perspective: 1000px;
   width: 100%; /* Prendre toute la largeur */
-  height: 40vh; /* Prendre toute la hauteur de la vue */
+  height: 40vh; /* Hauteur initiale */
   margin: 0; /* Pas de marge */
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 768px) {
+    height: 60vh; /* Ajuster la hauteur pour les appareils mobiles */
+  }
 `;
 
 const Image = styled.img`

@@ -12,30 +12,30 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
 
   const styles = {
     btnBlue: {
-      display: 'inline-block',
-      padding: '0.5rem 1rem',
-      color: 'white', // Couleur de texte blanche par défaut
-      backgroundColor: 'rgba(3, 112, 225, 1)', // Fond bleu par défaut pour "Toutes les ressources"
-      borderRadius: '0.375rem', // Coins arrondis
-      transition: 'background-color 0.3s ease, color 0.3s ease', // Transition sur le fond et la couleur du texte
-      textDecoration: 'none', // Pas de soulignement
+      padding: '0.25rem 0.75rem', // Ajustement de la taille des boutons
+      color: 'white',
+      backgroundColor: 'rgba(3, 112, 225, 1)',
+      borderRadius: '0.375rem',
+      transition: 'background-color 0.3s ease, color 0.3s ease',
+      textDecoration: 'none',
+      fontSize: '0.75rem', // Taille de police réduite
     },
     btnBlueHover: {
-      backgroundColor: 'rgba(3, 112, 225, 1)', // Couleur bleue au survol
-      color: 'white', // Couleur de texte blanche au survol
+      backgroundColor: 'rgba(3, 112, 225, 1)',
+      color: 'white',
     },
     btnWhite: {
-      display: 'inline-block',
-      padding: '0.5rem 1rem',
-      color: 'black', // Couleur de texte noire par défaut
-      backgroundColor: 'white', // Fond blanc par défaut pour les autres catégories
-      borderRadius: '0.375rem', // Coins arrondis
-      transition: 'background-color 0.3s ease, color 0.3s ease', // Transition sur le fond et la couleur du texte
-      textDecoration: 'none', // Pas de soulignement
+      padding: '0.25rem 0.75rem', // Ajustement de la taille des boutons
+      color: 'black',
+      backgroundColor: 'white',
+      borderRadius: '0.375rem',
+      transition: 'background-color 0.3s ease, color 0.3s ease',
+      textDecoration: 'none',
+      fontSize: '0.75rem', // Taille de police réduite
     },
     btnWhiteHover: {
-      backgroundColor: 'rgba(3, 112, 225, 1)', // Couleur bleue au survol
-      color: 'white', // Couleur de texte blanche au survol
+      backgroundColor: 'rgba(3, 112, 225, 1)',
+      color: 'white',
     },
   };
 
@@ -49,23 +49,15 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
 
   return (
     <div className="menu-container">
-      <div className="max-w-screen-1xl text-black h-full mx-auto px-4 py-6 flex items-center justify-between">
+      <div className="max-w-screen-1xl mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
-        <div
-          style={{
-            display: 'inline-block',
-            overflow: 'hidden',
-            borderRadius: '5px',
-            transition: 'background-color 0.3s ease',
-          }}
-          className="logo-container"
-        >
+        <div className="logo-container">
           <Link href="http://localhost:3000/" passHref>
             <img
               src="/assets/logo fil.svg"
               alt="Left Logo"
-              style={{ width: '150px', height: 'auto', marginRight: '30px', borderRadius: '7px' }}
               className="logo"
+              style={{ width: '150px', height: 'auto' }}
             />
           </Link>
         </div>
@@ -82,8 +74,8 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
                 <div
                   style={{
                     ...styles.btnBlue,
-                    backgroundColor: styles.btnBlue.backgroundColor, // Toujours bleu
-                    color: styles.btnBlue.color, // Toujours blanc
+                    backgroundColor: styles.btnBlue.backgroundColor,
+                    color: styles.btnBlue.color,
                   }}
                 >
                   Toutes les ressources
@@ -104,7 +96,7 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <FiSettings className="text-redF text-2xl mr-2" /> {/* Icône et texte */}
+                    <FiSettings className="text-redF text-2xl mr-2" />
                     Méthodologie
                   </div>
                 </div>
@@ -124,7 +116,7 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <BsMegaphone className="text-greenF text-2xl mr-2" /> {/* Icône et texte */}
+                    <BsMegaphone className="text-greenF text-2xl mr-2" />
                     Promotion
                   </div>
                 </div>
@@ -144,7 +136,7 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <GrGroup className="text-yellowF text-2xl mr-2" /> {/* Icône et texte */}
+                    <GrGroup className="text-yellowF text-2xl mr-2" />
                     Pour la classe
                   </div>
                 </div>
@@ -164,7 +156,7 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <IoMdGlobe className="text-purplF text-2xl mr-2" /> {/* Icône et texte */}
+                    <IoMdGlobe className="text-purplF text-2xl mr-2" />
                     Pays
                   </div>
                 </div>
@@ -173,14 +165,17 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
           </ul>
         )}
 
-        {/* Recherche */}
-        <div className="flex gap-8 items-center justify-center">
-          <BsSearch className="text-xl hover:text-hoverColor cursor-pointer text-center" onClick={() => setSearchVisible(!searchVisible)} />
+        {/* Recherche et autres éléments */}
+        <div className="flex gap-8 items-center">
+          <BsSearch
+            className="text-xl hover:text-gray-600 cursor-pointer"
+            onClick={() => setSearchVisible(!searchVisible)}
+          />
           {searchVisible && (
             <input
               type="text"
               placeholder="Rechercher..."
-              className="w-80 h-8 bg-white text-black uppercase text-sm font-normal rounded-md border-gray-300 px-2"
+              className="w-40 sm:w-60 h-8 bg-white text-black uppercase text-sm font-normal rounded-md border-gray-300 px-2"
             />
           )}
           <ScientificCommitteeButton />

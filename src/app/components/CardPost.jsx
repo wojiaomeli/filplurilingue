@@ -1,36 +1,61 @@
-import * as React from "react";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom";
+import React from "react";
+import { Card, CardContent, Typography, Button, Grid } from "@mui/material";
+import Link from 'next/link';
 
-export default function CardPost({ post }) {
+const CardPost = ({ post }) => {
+  // Récupère le résumé du contenu (premier paragraphe ou autre logique de résumé)
+  const firstParagraph = post.resume.find((item) => item.type === "paragraph");
+
+  // Gère le résumé du contenu (les 300 premiers caractères)
+  const truncatedContent = firstParagraph ? `${firstParagraph.children[0].text.substring(0, 300)}...` : '';
+
+  // Formatte la date de publication si elle est disponible
+  const formattedDate = post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : '';
+
   return (
-    <Card sx={{ maxWidth: 330, margin: '18px' }}>
-      <CardMedia
-        sx={{ height: 140 }}
-        image="/path/to/your/image.jpg" // Vous pouvez utiliser une image par défaut ou dynamique si disponible dans les données du post
-        title={post.title}
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          {post.title}
+    <Card style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+      {/* Conteneur pour l'image avec une taille fixe */}
+      <div style={{ width: "100%", paddingTop: "75%", position: "relative" }}>
+        {post.image && (
+          <img 
+            src={`http://localhost:1337${post.image.data[0].attributes.url}`} 
+            alt={post.image.data[0].attributes.name} 
+            style={{ 
+              position: "absolute", 
+              width: "100%", 
+              height: "100%", 
+              objectFit: "cover", 
+              top: 0, 
+              left: 0 
+            }} 
+          />
+        )}
+      </div>
+      <CardContent style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        {/* Vérifiez si post.title est défini avant de l'afficher */}
+        <Typography variant="h5" component="h2" gutterBottom>
+          {post.title ? post.title : 'Titre non disponible'}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {post.contenent && post.contenent.length > 0 
-            ? post.contenent[0].children[0].text 
-            : "No content available."}
+        <Typography color="text.secondary" gutterBottom>
+          {truncatedContent} {/* Affichez le résumé ici */}
         </Typography>
+        {/* Bouton "Lire plus" pour voir l'article complet */}
+        <div style={{ marginTop: 'auto', alignSelf: 'flex-end' }}>
+          <Link href={`/article/${post.slug}`} passHref>
+            <Button size="small" color="primary">
+              Lire plus
+            </Button>
+          </Link>
+        </div>
+        {/* Affichage de la date de publication si disponible */}
+        {formattedDate && (
+          <Typography color="text.secondary" variant="body2" style={{ marginTop: 8, fontSize: 12 }}>
+            Publié le {formattedDate}
+          </Typography>
+        )}
       </CardContent>
-      <CardActions>
-        <Link to={`/Post/${post.slug}`}>
-          <Button size="small">Lire</Button>
-        </Link>
-        <Button size="small">Partager</Button>
-      </CardActions>
     </Card>
   );
-}
+};
+
+export default CardPost;

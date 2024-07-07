@@ -8,7 +8,7 @@ export default function Posts() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:1337/api/posts?sort=createdAt:desc&pagination[limit]=3", {
+    fetch("http://localhost:1337/api/posts?populate=*", {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -16,10 +16,19 @@ export default function Posts() {
     })
       .then((res) => res.json())
       .then((res) => {
+        // Assurez-vous que res.data contient les données des posts
+        const sortedPosts = res.data.sort((a, b) => {
+          // Trier par date de publication décroissante
+          return new Date(b.attributes.publishedAt) - new Date(a.attributes.publishedAt);
+        });
+        
+        // Limiter aux trois derniers articles
+        const latestPosts = sortedPosts.slice(0, 3);
+
         setTimeout(() => {
-          setPosts(res.data); // assurez-vous que res.data contient les données des posts
+          setPosts(latestPosts);
           setIsLoading(false);
-        }, 1000); // délai ajouté pour voir le Skeleton
+        }, 1000); // Délai ajouté pour voir le Skeleton
       })
       .catch((error) => {
         console.error("Error fetching posts:", error);
@@ -29,22 +38,27 @@ export default function Posts() {
 
   return (
     <div className="posts">
-      <Grid container spacing={2}>
+      <Grid container spacing={3}>
         {isLoading ? (
-          <Box>
-            <Skeleton variant="rectangular" width={210} height={118} />
-            <Skeleton width="60%" />
-            <Skeleton />
-            <Skeleton />
-            <Skeleton />
-          </Box>
+          // Affichage du Skeleton pendant le chargement
+          <Grid item xs={12} sm={6} md={4}>
+            <Box>
+              <Skeleton variant="rectangular" width="100%" height={300} />
+              <Skeleton width="60%" />
+              <Skeleton />
+              <Skeleton />
+              <Skeleton />
+            </Box>
+          </Grid>
         ) : (
+          // Affichage des trois derniers articles
           posts.map((post) => (
-            <CardPost key={post.id} post={post.attributes} /> // assume CardPost expects the post data in 'attributes'
+            <Grid item key={post.id} xs={12} sm={6} md={4}>
+              <CardPost post={post.attributes} />
+            </Grid>
           ))
         )}
       </Grid>
     </div>
   );
 }
-

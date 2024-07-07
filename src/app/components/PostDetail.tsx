@@ -10,7 +10,7 @@ const PostDetail = () => {
   const [isLoading, setIsLoading] = useState(true); // État pour indiquer si le chargement est en cours
 
   useEffect(() => {
-    fetch(`http://localhost:1337/api/posts?slug=${slug}`, {
+    fetch(`http://localhost:1337/api/posts?sort=createdAt:desc&pagination[limit]=3&_populate=*`, {
       method: "GET",
       headers: {
         Accept: "application/json",

@@ -12,6 +12,11 @@ const MacaronContainer = styled.div`
   height: 80px; // Hauteur réduite du macaron
   perspective: 1000px;
   margin: 20px;
+
+  @media (max-width: 768px) {
+    width: 60px; // Ajustement de la largeur pour les écrans plus petits
+    height: 60px; // Ajustement de la hauteur pour les écrans plus petits
+  }
 `;
 
 const MacaronWrapper = styled.div`
@@ -45,11 +50,18 @@ const BackFace = styled(FrontFace)`
 
 const Icon = styled(FontAwesomeIcon)`
   font-size: 2rem; // Taille de l'icône réduite
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem; // Ajustement de la taille de l'icône pour les écrans plus petits
+  }
 `;
 
 const Text = styled.div`
   font-size: 0.5rem; // Taille de la police réduite
-  font-weight: bold;
+
+  @media (max-width: 768px) {
+    font-size: 0.4rem; // Ajustement de la taille de la police pour les écrans plus petits
+  }
 `;
 
 const Macaron = () => {

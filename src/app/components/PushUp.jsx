@@ -1,7 +1,6 @@
 import React from 'react';
 
 const PushUp = ({ title, description, color, icon }) => {
-  
   return (
     <div className="push-up-container" style={{ marginBottom: '20px' }}>
       <div className="push-up" style={{ display: 'flex', borderRadius: '0.5rem', overflow: 'hidden', border: '4px solid rgba(0, 0, 0, 0.1)', maxWidth: '100%', animation: 'slideIn 0.5s forwards' }}>
@@ -32,6 +31,27 @@ const PushUp = ({ title, description, color, icon }) => {
         }
         .push-up-container {
           overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+          .push-up {
+            flex-direction: column;
+            align-items: center; /* Centrer les éléments */
+          }
+          .push-up-color {
+            border-right: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            flex: 0 0 auto;
+            width: 100%;
+            height: 4rem;
+          }
+          .push-up-content {
+            padding: 1rem;
+          }
+          .push-up-button {
+            width: 100%;
+            margin-top: 1rem;
+          }
         }
       `}</style>
     </div>
