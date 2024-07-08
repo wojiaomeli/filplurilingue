@@ -2,7 +2,6 @@
 import React from 'react';
 import { FaFacebook, FaTimes, FaYoutube, FaLinkedin } from 'react-icons/fa';
 
-
 const Footer = () => {
   return (
     <footer className="footer bg-white relative">
@@ -10,9 +9,9 @@ const Footer = () => {
       <div className="bg-PurpulFil h-20"></div>
       
       {/* Contenu du footer */}
-      <div className="max-w-full mx-auto py-8 px-4 flex justify-between items-center">
+      <div className="max-w-full mx-auto py-8 px-4 md:flex md:justify-between md:items-center">
         {/* Logo à gauche */}
-        <div>
+        <div className="mb-8 md:mb-0">
           <a href="https://lefilplurilingue.org/" target="_blank" rel="noopener noreferrer">
             <img src="/assets/logo fil.svg" alt="Left Logo" className="footer-logo" />
           </a>
@@ -23,19 +22,19 @@ const Footer = () => {
         </div>
         
         {/* Logo à droite */}
-        <div className="relative">
+        <div className="relative text-center md:text-right">
           <a href="https://lefilplurilingue.org/" target="_blank" rel="noopener noreferrer">
-            <img src="/assets/FEI-logo.png" alt="Right Logo" className="footer-logo" />
+            <img src="/assets/FEI-logo.png" alt="Right Logo" className="footer-logo mx-auto md:mx-0" />
           </a>
           {/* Texte sous le logo */}
-          <div className="left-0 right-0 text-center text-customBlue mb-4">
+          <div className="left-0 right-0 text-center text-customBlue mt-4 md:mb-4">
             <p>©2025 Le Fil plurilingue</p>
           </div>
         </div>
       </div>
       
       {/* Réseaux sociaux */}
-      <div className="flex justify-end items-center py-1 px-72">
+      <div className="flex justify-center md:justify-end items-center py-1 px-4 md:px-72">
         <a href="https://www.facebook.com/lefilplurilingue"><FaFacebook className="text-blue-500 text-2xl mr-4" /></a>
         <a href="https://twitter.com/FilPluri"><FaTimes className="text-black text-2xl mr-4 " /></a>
         <a href="https://www.youtube.com/channel/UCbmBlgyzXgg9616usvb-BzQ"><FaYoutube className="text-red-500 text-2xl mr-4 " /></a>
@@ -44,7 +43,7 @@ const Footer = () => {
 
       {/* Trait en bas avec logotype centré */}
       <div className="relative">
-        <div className="bg-customBlue h-0.5 w-1/2 mx-auto mb-1"></div>
+        <div className="bg-customBlue h-0.5 w-3/4 mx-auto md:w-1/2 mb-1"></div>
         <div className="absolute inset-0 flex justify-center items-center">
           <a href="https://lefilplurilingue.org/" target="_blank" rel="noopener noreferrer">
             <img src="/assets/fei logotype.svg" alt="Logotype" className="footer-logotype" />
@@ -54,8 +53,8 @@ const Footer = () => {
 
       {/* Liens de contact et confidentialité */}
       <div className="bg-white py-1">
-        <div className="max-w-full mx-auto flex justify-start px-72">
-          <ul className="flex space-x-4 text-BluFil text-xs">
+        <div className="max-w-full mx-auto flex flex-col md:flex-row justify-start md:px-72 text-center md:text-left">
+          <ul className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 text-BluFil text-xs">
             <li>
               <a href="#">Mentions légales</a>
             </li>
