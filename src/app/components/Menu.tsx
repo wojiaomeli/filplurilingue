@@ -12,26 +12,26 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
 
   const styles = {
     btnBlue: {
-      padding: '0.25rem 0.75rem', // Ajustement de la taille des boutons
+      padding: '0.25rem 0.75rem',
       color: 'white',
       backgroundColor: 'rgba(3, 112, 225, 1)',
       borderRadius: '0.375rem',
       transition: 'background-color 0.3s ease, color 0.3s ease',
       textDecoration: 'none',
-      fontSize: '0.75rem', // Taille de police réduite
+      fontSize: '0.75rem',
     },
     btnBlueHover: {
       backgroundColor: 'rgba(3, 112, 225, 1)',
       color: 'white',
     },
     btnWhite: {
-      padding: '0.25rem 0.75rem', // Ajustement de la taille des boutons
+      padding: '0.25rem 0.75rem',
       color: 'black',
       backgroundColor: 'white',
       borderRadius: '0.375rem',
       transition: 'background-color 0.3s ease, color 0.3s ease',
       textDecoration: 'none',
-      fontSize: '0.75rem', // Taille de police réduite
+      fontSize: '0.75rem',
     },
     btnWhiteHover: {
       backgroundColor: 'rgba(3, 112, 225, 1)',
@@ -52,7 +52,7 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
       <div className="max-w-screen-1xl mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
         <div className="logo-container">
-          <Link href="http://localhost:3000/" passHref>
+          <Link href="/" passHref>
             <img
               src="/assets/logo fil.svg"
               alt="Left Logo"
@@ -70,7 +70,7 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
               onMouseEnter={() => handleMouseEnter('ressources')}
               onMouseLeave={handleMouseLeave}
             >
-              <Link href="http://localhost:3000/ressource" passHref>
+              <Link href="/ressource" passHref>
                 <div
                   style={{
                     ...styles.btnBlue,
@@ -87,7 +87,7 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
               onMouseEnter={() => handleMouseEnter('methodologie')}
               onMouseLeave={handleMouseLeave}
             >
-              <Link href="http://localhost:3000/methodologie">
+              <Link href="/methodologie">
                 <div
                   style={{
                     ...styles.btnWhite,
@@ -107,7 +107,7 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
               onMouseEnter={() => handleMouseEnter('promotion')}
               onMouseLeave={handleMouseLeave}
             >
-              <Link href="http://localhost:3000/promotion">
+              <Link href="/promotion">
                 <div
                   style={{
                     ...styles.btnWhite,
@@ -127,7 +127,7 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
               onMouseEnter={() => handleMouseEnter('classe')}
               onMouseLeave={handleMouseLeave}
             >
-              <Link href="http://localhost:3000/classe">
+              <Link href="/classe">
                 <div
                   style={{
                     ...styles.btnWhite,
@@ -147,7 +147,7 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
               onMouseEnter={() => handleMouseEnter('pays')}
               onMouseLeave={handleMouseLeave}
             >
-              <Link href="http://localhost:3000/pays">
+              <Link href="/pays">
                 <div
                   style={{
                     ...styles.btnWhite,

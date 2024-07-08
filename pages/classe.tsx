@@ -1,4 +1,3 @@
-// src/pages/classe.js
 import React from 'react';
 import BannerPage from '../src/app/components/BannerPage';
 import Layout from '../src/app/components/layout';
