@@ -57,7 +57,7 @@ const Footer = () => {
         <div className="max-w-full mx-auto flex justify-start px-72">
           <ul className="flex space-x-4 text-BluFil text-xs">
             <li>
-              <a href="/mentions-legales">Mentions légales</a>
+              <a href="/mentions-legales.tsx">Mentions légales</a>
             </li>
             <li>
               <a href="/a-propos">À propos</a>

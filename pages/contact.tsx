@@ -5,9 +5,9 @@ import Layout from "../src/app/components/layout";
 
 export default function contact() {
     return(
-       
+        <Layout>
 <ContactForm />
-       
+        </Layout>
 
     );
     

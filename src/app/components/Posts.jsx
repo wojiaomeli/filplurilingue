@@ -8,7 +8,7 @@ export default function Posts() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:1337/api/posts?populate=*", {
+    fetch("http://pplefilstrapi:1337/api/posts?populate=*", {
       method: "GET",
       headers: {
         Accept: "application/json",

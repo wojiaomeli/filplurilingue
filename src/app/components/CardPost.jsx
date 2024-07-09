@@ -18,7 +18,7 @@ const CardPost = ({ post }) => {
       <div style={{ width: "100%", paddingTop: "75%", position: "relative" }}>
         {post.image && (
           <img 
-            src={`http://localhost:1337${post.image.data[0].attributes.url}`} 
+            src={`http://pplefilstrapi:1337${post.image.data[0].attributes.url}`} 
             alt={post.image.data[0].attributes.name} 
             style={{ 
               position: "absolute", 

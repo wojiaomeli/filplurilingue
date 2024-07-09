@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from 'react';
 import Menu from './Menu';
-import Banner from './Banner';
 
 const Navbar = () => {
   const [searchVisible, setSearchVisible] = useState(false);

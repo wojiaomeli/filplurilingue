@@ -11,39 +11,39 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
 
   const styles = {
     btnBlue: {
-      padding: '0.5rem 1rem', // Ajustement de la taille du bouton
+      padding: '0.25rem 0.75rem',
       color: 'white',
       backgroundColor: 'rgba(3, 112, 225, 1)',
       borderRadius: '0.375rem',
       transition: 'background-color 0.3s ease, color 0.3s ease',
       textDecoration: 'none',
-      fontSize: '0.875rem', // Taille de police légèrement augmentée
+      fontSize: '0.75rem',
     },
     btnBlueHover: {
       backgroundColor: 'rgba(3, 112, 225, 0.8)',
       color: 'white',
     },
     btnWhite: {
-      padding: '0.5rem 1rem', // Ajustement de la taille du bouton
+      padding: '0.25rem 0.75rem',
       color: 'black',
       backgroundColor: 'white',
       borderRadius: '0.375rem',
       transition: 'background-color 0.3s ease, color 0.3s ease',
       textDecoration: 'none',
-      fontSize: '0.875rem', // Taille de police légèrement augmentée
+      fontSize: '0.75rem',
     },
     btnWhiteHover: {
       backgroundColor: 'rgba(3, 112, 225, 1)',
       color: 'white',
     },
     btnRed: {
-      padding: '0.5rem 1rem', // Ajustement de la taille du bouton
+      padding: '0.25rem 0.75rem',
       color: 'white',
       backgroundColor: 'rgba(229, 7, 73, 1)',
       borderRadius: '0.375rem',
       transition: 'background-color 0.3s ease, color 0.3s ease',
       textDecoration: 'none',
-      fontSize: '0.875rem', // Taille de police légèrement augmentée
+      fontSize: '0.75rem',
     },
     btnRedHover: {
       backgroundColor: 'rgba(204, 0, 51, 1)',
@@ -198,11 +198,11 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
                 color: hoveredItem === 'comite' ? styles.btnRedHover.color : styles.btnRed.color,
                 display: 'flex',
                 alignItems: 'center',
-                padding: '0.5rem 1rem', // Ajustement de la taille du bouton
+                padding: '0.25rem 0.75rem',
                 borderRadius: '0.375rem',
                 transition: 'background-color 0.3s ease, color 0.3s ease',
                 textDecoration: 'none',
-                fontSize: '0.875rem', // Taille de police légèrement augmentée
+                fontSize: '0.75rem',
               }}
               onMouseEnter={() => handleMouseEnter('comite')}
               onMouseLeave={handleMouseLeave}
