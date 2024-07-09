@@ -12,13 +12,16 @@ const CardPost = ({ post }) => {
   // Formatte la date de publication si elle est disponible
   const formattedDate = post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : '';
 
+  // Utiliser la variable d'environnement pour l'URL de l'API
+  const API_URL = process.env.REACT_APP_API_URL;
+
   return (
     <Card style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       {/* Conteneur pour l'image avec une taille fixe */}
       <div style={{ width: "100%", paddingTop: "75%", position: "relative" }}>
         {post.image && (
           <img 
-            src={`http://pplefilstrapi:1337${post.image.data[0].attributes.url}`} 
+            src={`${API_URL}${post.image.data[0].attributes.url}`} 
             alt={post.image.data[0].attributes.name} 
             style={{ 
               position: "absolute", 

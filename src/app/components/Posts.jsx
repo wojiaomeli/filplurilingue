@@ -6,9 +6,12 @@ import Skeleton from "@mui/material/Skeleton";
 export default function Posts() {
   const [isLoading, setIsLoading] = useState(true);
   const [posts, setPosts] = useState([]);
+  
+  // Utiliser la variable d'environnement pour l'URL de l'API
+  const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    fetch("http://pplefilstrapi:1337/api/posts?populate=*", {
+    fetch(`${API_URL}/posts?populate=*`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -34,7 +37,7 @@ export default function Posts() {
         console.error("Error fetching posts:", error);
         setIsLoading(false);
       });
-  }, []);
+  }, [API_URL]);
 
   return (
     <div className="posts">
