@@ -1,7 +1,6 @@
-// App.tsx
 import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Posts from "./app/components/posts"; // Composant qui liste les articles
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Posts from "./app/components/Posts"; // Composant qui liste les articles
 import PostDetail from "./app/components/PostDetail"; // Composant pour afficher les détails d'un article
 
 function App() {
@@ -9,7 +8,7 @@ function App() {
     <Router>
       <Switch>
         <Route exact path="/" component={Posts} />
-        <Route path="/Post/:slug" components={PostDetail} />
+        <Route path="/Post/:slug" component={PostDetail} />
       </Switch>
     </Router>
   );

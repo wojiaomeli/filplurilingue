@@ -1,4 +1,4 @@
-import Layout from "../src/app/components/layout"
+import Layout from "../src/app/components/Layout"
 
 export default function VideoTemoignages() {
     return(

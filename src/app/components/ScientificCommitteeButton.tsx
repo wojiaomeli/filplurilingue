@@ -1,10 +1,13 @@
 import React from 'react';
+import Link from 'next/link';
 
 const ScientificCommitteeButton = () => {
   return (
-    <button className="w-48 h-12 bg-redFil text-white uppercase text-sm font-semibold rounded-md hover:bg-redFil-400 duration-300">
-      <a href="http://localhost:3000/comite">Comité scientifique</a>
-    </button>
+    <Link href="/comite" passHref legacyBehavior>
+      <a className="w-36 h-8 bg-redFil text-white uppercase text-xs font-semibold rounded-md hover:bg-redFil-400 duration-300 flex items-center justify-center">
+        Comité scientifique
+      </a>
+    </Link>
   );
 };
 

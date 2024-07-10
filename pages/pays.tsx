@@ -1,5 +1,5 @@
 import BannerPage from "../src/app/components/BannerPage";
-import Layout from "../src/app/components/layout";
+import Layout from "../src/app/components/Layout";
 
 export default function Pays() {
   return (

@@ -1,33 +1,21 @@
 import React from 'react';
-import styled from 'styled-components';
 
-const BannerContainer = styled.div`
-  background-color: ${({ color }) => color || 'rgba(3, 112, 225, 1)'};
-  color: white;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+interface BannerPageProps {
+  title: string;
+  color: string;
+  children?: React.ReactNode;
+}
 
-const BannerTextWrapper = styled.div`
-  text-align: center;
-`;
-
-const BannerTitle = styled.h1`
-  margin: 0;
-  font-size: 2.5rem;
-  font-weight: bold;
-`;
-
-const BannerPage = ({ title, color, children }) => {
+const BannerPage: React.FC<BannerPageProps> = ({ title, color, children }) => {
   return (
-    <BannerContainer color={color}>
-      <BannerTextWrapper>
-        <BannerTitle>{title}</BannerTitle>
-        {children}
-      </BannerTextWrapper>
-    </BannerContainer>
+    <div className="banner" style={{ backgroundColor: color }}>
+      <div className="max-w-screen-xl mx-auto px-4 py-8">
+        <h1 className="text-white text-4xl font-bold">{title}</h1>
+        <div className="banner-content">
+          {children}
+        </div>
+      </div>
+    </div>
   );
 };
 

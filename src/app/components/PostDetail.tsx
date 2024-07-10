@@ -1,7 +1,7 @@
 // PostDetail.tsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Typography } from "@mui/material"; // Utilisez les composants de Material-UI ou ceux de votre choix
+import { Container, Typography } from "@mui/material";
 import Skeleton from "@mui/material/Skeleton";
 
 const PostDetail = () => {
@@ -10,21 +10,36 @@ const PostDetail = () => {
   const [isLoading, setIsLoading] = useState(true); // État pour indiquer si le chargement est en cours
 
   useEffect(() => {
-    fetch(`http://pplefilstrapi.ciep.fr:1337/api/posts?sort=createdAt:desc&pagination[limit]=3&_populate=*`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        setPost(res.data[0]); // Récupérez le premier article correspondant au slug (suppose que le slug est unique)
+    const fetchPost = async () => {
+      try {
+        const API_URL = process.env.REACT_APP_API_URL;
+        const res = await fetch(`${API_URL}/posts?slug=${slug}&populate=*`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error(`Fetch a échoué avec le statut ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        if (data && data.data && data.data.length > 0) {
+          setPost(data.data[0]);
+        } else {
+          throw new Error("Aucun article trouvé avec ce slug");
+        }
+
         setIsLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching post details:", error);
         setIsLoading(false);
-      });
+      }
+    };
+
+    fetchPost();
   }, [slug]);
 
   if (isLoading) {
@@ -41,10 +56,10 @@ const PostDetail = () => {
   return (
     <Container>
       <Typography variant="h2" gutterBottom>
-        {post.attributes.title}
+        {post && post.attributes.title}
       </Typography>
-      {post.attributes.contenent &&
-        post.attributes.contenent.map((content: any, index: number) => (
+      {post &&
+        post.attributes.content.map((content: any, index: number) => (
           <Typography key={index} variant="body1" paragraph>
             {content.children.map((child: any, index: number) => (
               <span key={index}>{child.text}</span>

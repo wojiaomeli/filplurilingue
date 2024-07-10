@@ -1,4 +1,3 @@
-"use client";
 import React, { useState } from "react";
 
 const ContactForm = () => {
@@ -18,11 +17,19 @@ const ContactForm = () => {
     setMessage(e.target.value);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Ajoutez ici la logique pour envoyer les données du formulaire, par exemple avec fetch()
+    console.log("Email:", email);
+    console.log("Subject:", subject);
+    console.log("Message:", message);
+  };
+
   return (
     <div className="contact-form-container">
       <h2 className="contact-title">Nous contacter</h2>
       <p>Si vous souhaitez nous contacter, merci de remplir ce formulaire.</p>
-      <form className="contact-form">
+      <form className="contact-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <input
             type="email"
@@ -54,7 +61,9 @@ const ContactForm = () => {
             required
           ></textarea>
         </div>
-        <button type="submit" className="contact-submit-button">Envoyer</button>
+        <button type="submit" className="contact-submit-button">
+          Envoyer
+        </button>
       </form>
     </div>
   );

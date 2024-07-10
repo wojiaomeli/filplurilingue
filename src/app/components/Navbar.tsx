@@ -1,4 +1,4 @@
-"use client";
+// Navbar.jsx
 import React, { useState } from 'react';
 import Menu from './Menu';
 
@@ -6,7 +6,7 @@ const Navbar = () => {
   const [searchVisible, setSearchVisible] = useState(false);
 
   return (
-    <nav className="navbar mt-5"> {/* la classe mt-5 pour une marge supérieure */}
+    <nav className="navbar mt-5">
       <div className="relative">
         <Menu searchVisible={searchVisible} setSearchVisible={setSearchVisible} />
       </div>
