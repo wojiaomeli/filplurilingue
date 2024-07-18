@@ -28,15 +28,15 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
   ];
 
   return (
-    <div className="menu-container">
+    <div className="menu-container bg-white shadow-md">
       <div className="max-w-screen-xl mx-auto px-4 py-2 flex items-center justify-between">
         {/* Logo */}
-        <div className="logo-container flex-shrink-0 mr-4">
+        <div className="flex-shrink-0 mr-4">
           <Link href="/" passHref legacyBehavior>
             <a className="block">
               <Image
                 src="/assets/logo fil.svg" // Vérifiez le chemin de l'image
-                alt="Left Logo"
+                alt="Logo"
                 width={180}  // Ajustez la largeur du logo
                 height={60}  // Ajustez la hauteur du logo
               />
@@ -45,28 +45,30 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
         </div>
 
         {/* Menu */}
-        {!searchVisible && (
-          <ul className="flex items-center gap-2 uppercase text-sm font-medium flex-wrap flex-grow">
-            {menuItems.map(item => (
-              <li
-                key={item.id}
-                className="cursor-pointer duration-300 menuItem flex-shrink-0"
-                onMouseEnter={() => handleMouseEnter(item.id)}
-                onMouseLeave={handleMouseLeave}
-              >
-                <Link href={item.link} passHref legacyBehavior>
-                  <a className={`flex items-center ${styles[item.style]} ${item.id !== 'ressources' && hoveredItem === item.id ? styles.btnBlue : ''}`}>
-                    {item.icon}
-                    <span className={`ml-1 ${item.id === 'pays' ? 'ml-2' : ''}`}>{item.label}</span>
-                  </a>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
+        <div className="flex-grow flex justify-center">
+          {!searchVisible && (
+            <ul className="flex items-center gap-4 uppercase text-sm font-medium flex-wrap">
+              {menuItems.map(item => (
+                <li
+                  key={item.id}
+                  className="cursor-pointer duration-300 menuItem"
+                  onMouseEnter={() => handleMouseEnter(item.id)}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <Link href={item.link} passHref legacyBehavior>
+                    <a className={`flex items-center ${styles[item.style]} ${item.id !== 'ressources' && hoveredItem === item.id ? styles.btnBlue : ''}`}>
+                      {item.icon}
+                      <span className={`ml-1 ${item.id === 'pays' ? 'ml-2' : ''}`}>{item.label}</span>
+                    </a>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         {/* Recherche et autres éléments */}
-        <div className="flex gap-2 items-center ml-auto">
+        <div className="flex gap-4 items-center">
           <BsSearch
             className="text-xl hover:text-gray-600 cursor-pointer"
             onClick={() => setSearchVisible(!searchVisible)}
@@ -88,6 +90,7 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
 const styles = {
   btnBluePermanent: 'px-2 py-1 text-white bg-blue-600 rounded-md transition duration-300 ease-in-out text-sm',
   btnWhite: 'px-2 py-1 text-black bg-white rounded-md transition duration-300 ease-in-out text-xs',
+  btnBlue: 'bg-blue-500 text-white'
 };
 
 export default Menu;

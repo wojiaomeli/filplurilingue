@@ -1,20 +1,21 @@
-import React from "react";
-import { Card, CardContent, Typography, Button, Grid } from "@mui/material";
+import React from 'react';
+import { Card, CardContent, Typography, Button, Grid } from '@mui/material';
 import Link from 'next/link';
 import Image from 'next/image';
 
-const CardPost = ({ post }) => {
-  const firstParagraph = post.resume.find((item) => item.type === "paragraph");
+const CardPostPays = ({ post }) => {
+  // Assurez-vous d'adapter le traitement des données en fonction de votre modèle de données spécifique
+  const firstParagraph = post.resume.find((item) => item.type === 'paragraph');
   const truncatedContent = firstParagraph ? `${firstParagraph.children[0].text.substring(0, 300)}...` : '';
   const formattedDate = post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : '';
 
   return (
-    <Card style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      <div style={{ position: "relative", width: "100%", height: 0, paddingTop: "56.25%" }}>
+    <Card style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ position: 'relative', width: '100%', height: 0, paddingTop: '56.25%' }}>
         {post.image && (
           <Image
-            src={`${post.image.data[0].attributes.url}`} // Utilisation directe de l'URL sans le domaine complet
-            alt={post.image.data[0].attributes.name}
+            src={`${post.image.url}`} // Assurez-vous que votre modèle de données contient une propriété "url" pour l'image
+            alt={post.image.alternativeText} // Assurez-vous que votre modèle de données contient une propriété "alternativeText" pour l'image
             layout="fill"
             objectFit="cover"
           />
@@ -44,4 +45,4 @@ const CardPost = ({ post }) => {
   );
 };
 
-export default CardPost;
+export default CardPostPays;

@@ -1,5 +1,6 @@
 import BannerPage from "../src/app/components/BannerPage";
 import Layout from "../src/app/components/Layout";
+import PostsPays from "../src/app/components/PostsPays";
 
 export default function Pays() {
   return (
@@ -8,7 +9,9 @@ export default function Pays() {
         <div>
           <BannerPage title="Dispositif par pays"  color="rgba(55, 53, 152, 1)" />
         </div>
-        <h1>Pays hello !</h1>
+      <div>
+        <PostsPays/>
+      </div>
       </Layout>
     </div>
   );

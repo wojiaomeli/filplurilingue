@@ -21,6 +21,7 @@
     "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.16.0",
     "animejs": "^3.2.2",
+    "axios": "^1.7.2",
     "dotenv": "^16.4.5",
     "leaflet": "^1.9.4",
     "leaflet-curve": "^1.0.0",
