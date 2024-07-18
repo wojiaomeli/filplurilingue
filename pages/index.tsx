@@ -61,7 +61,7 @@ export async function getServerSideProps() {
   const API_URL = process.env.REACT_APP_API_URL;
   
   try {
-    const res = await fetch(`${API_URL}/posts?populate=*`, {
+    const res = await fetch(`${API_URL}/api/posts?populate=*`, {
       method: "GET",
       headers: {
         Accept: "application/json",
