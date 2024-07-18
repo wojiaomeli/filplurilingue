@@ -1,33 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import CardPostPays from './CardPostPays';
 import { Grid, Box, Typography } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import axios from 'axios';
 
-const PostsPays = () => {
-  const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/articles?categorie.nom=Classe&_sort=publishedAt:DESC`);
-        if (response.data && response.data.data) {
-          setPosts(response.data.data);
-        } else {
-          setError('Invalid response structure');
-        }
-        setIsLoading(false);
-      } catch (err) {
-        console.error('Error fetching posts:', err);
-        setError('Error fetching posts');
-        setIsLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, []);
+const PostsPays = ({ posts, error }) => {
+  const isLoading = !posts && !error;
 
   return (
     <div className="posts">
@@ -56,6 +34,25 @@ const PostsPays = () => {
       </Grid>
     </div>
   );
+};
+
+export const getServerSideProps = async () => {
+  try {
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/articles?categorie.nom=Classe&_sort=publishedAt:DESC`;
+    const response = await axios.get(apiUrl);
+    return {
+      props: {
+        posts: response.data.data,
+      },
+    };
+  } catch (err) {
+    console.error('Error fetching posts:', err.message);
+    return {
+      props: {
+        error: `Error fetching posts: ${err.message}`,
+      },
+    };
+  }
 };
 
 export default PostsPays;
