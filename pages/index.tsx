@@ -6,37 +6,32 @@ import ContainerJumelage from "../src/app/components/ContainerJumelage";
 import Banner from "../src/app/components/Banner";
 import SocialMediaContainer from "../src/app/components/SocialMediaContainer";
 import Container from "@mui/material/Container";
-import { useRouter } from 'next/router'; // Utilisation de useRouter pour la gestion des routes Next.js
+import { useRouter } from 'next/router';
 import Navbar from "../src/app/components/Navbar";
 import Footer from "../src/app/components/Footer";
 
 const Home = ({ posts }) => {
-  // Fonction pour convertir la chaîne de date en millisecondes depuis Epoch
   const parseDate = (dateString) => {
     const parts = dateString.split("-");
     return Date.parse(`${parts[0]}-${parts[1]}-${parts[2]}`);
   };
 
-  // Tri des posts par date de publication décroissante
   const sortedPosts = posts.sort((a, b) => {
     return parseDate(b.attributes.publishedAt) - parseDate(a.attributes.publishedAt);
   });
 
-  // Récupération des trois derniers posts triés
   const latestPosts = sortedPosts.slice(0, 3);
-
   const router = useRouter();
 
   return (
     <div className="App">
-       <Navbar/>
+      <Navbar />
       <div className="w-full h-100 bg-banner-bg mb-20">
         <div className="flex flex-wrap gap-10 justify-center mb-10 mx- mt-5">
-         
-          <Banner/>
+          <Banner />
         </div>
         <div className="flex flex-wrap gap-10 justify-center mb-5 mx-6 mt-5">
-          <PushUpContainer/>
+          <PushUpContainer />
         </div>
       </div>
 
@@ -50,16 +45,16 @@ const Home = ({ posts }) => {
         </h1>
         <Posts posts={latestPosts} />
       </Container>
-       
+
       <SocialMediaContainer />
-      <Footer/>
+      <Footer />
     </div>
   );
 };
 
 export async function getServerSideProps() {
   const API_URL = process.env.REACT_APP_API_URL;
-  
+
   try {
     const res = await fetch(`${API_URL}/api/posts?populate=*`, {
       method: "GET",
@@ -76,18 +71,17 @@ export async function getServerSideProps() {
 
     return {
       props: {
-        posts: data.data || [], // Assurez-vous que posts est initialisé avec un tableau vide par défaut
+        posts: data.data || [],
       },
     };
   } catch (error) {
     console.error("Erreur lors de la récupération des données :", error.message);
     return {
       props: {
-        posts: [], // Retourne un tableau vide en cas d'erreur
+        posts: [],
       },
     };
   }
 }
-
 
 export default Home;

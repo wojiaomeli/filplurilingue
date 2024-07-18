@@ -1,9 +1,11 @@
+// src/app/components/CardPostPays.tsx
+
 import React from 'react';
 import { Card, CardContent, Typography, Button } from '@mui/material';
 import Link from 'next/link';
 import Image from 'next/image';
 
-const CardPost = ({ post }) => {
+const CardPostPays = ({ post }) => {
   const firstParagraph = post.resume.find((item) => item.type === 'paragraph');
   const truncatedContent = firstParagraph ? `${firstParagraph.children[0].text.substring(0, 300)}...` : '';
   const formattedDate = post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : '';
@@ -11,14 +13,14 @@ const CardPost = ({ post }) => {
   return (
     <Card style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'relative', width: '100%', height: 0, paddingTop: '56.25%' }}>
-        {post.image && post.image.url ? (
+        {post.image && post.image.data.length > 0 && (
           <Image
-            src={post.image.url}
-            alt={post.image.alternativeText}
+            src={`${process.env.NEXT_PUBLIC_API_URL}${post.image.data[0].attributes.url}`}
+            alt={post.image.data[0].attributes.alternativeText}
             layout="fill"
             objectFit="cover"
           />
-        ) : null}
+        )}
       </div>
       <CardContent style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Typography variant="h5" component="h2" gutterBottom>
@@ -44,4 +46,4 @@ const CardPost = ({ post }) => {
   );
 };
 
-export default CardPost;
+export default CardPostPays;

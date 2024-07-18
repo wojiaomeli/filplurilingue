@@ -1,16 +1,16 @@
+// src/app/components/PostsPays.tsx
+
 import React from 'react';
-import CardPostPays from './CardPostPays';
-import { Grid, Box, Typography } from '@mui/material';
+import { Grid, Box } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
+import CardPostPays from './CardPostPays';
 import axios from 'axios';
 
-const PostsPays = ({ posts, error }) => {
-  const isLoading = !posts && !error;
-
+const PostsPays = ({ posts }) => {
   return (
     <div className="posts">
       <Grid container spacing={3}>
-        {isLoading ? (
+        {posts.length === 0 ? (
           <Grid item xs={12} sm={6} md={4}>
             <Box>
               <Skeleton variant="rectangular" width="100%" height={300} />
@@ -19,10 +19,6 @@ const PostsPays = ({ posts, error }) => {
               <Skeleton />
               <Skeleton />
             </Box>
-          </Grid>
-        ) : error ? (
-          <Grid item xs={12}>
-            <Typography color="error">{error}</Typography>
           </Grid>
         ) : (
           posts.map((post) => (
@@ -38,18 +34,17 @@ const PostsPays = ({ posts, error }) => {
 
 export const getServerSideProps = async () => {
   try {
-    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/articles?categorie.nom=Classe&_sort=publishedAt:DESC`;
-    const response = await axios.get(apiUrl);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/articles?categorie.nom=Classe&_sort=publishedAt:DESC`);
     return {
       props: {
         posts: response.data.data,
       },
     };
-  } catch (err) {
-    console.error('Error fetching posts:', err.message);
+  } catch (error) {
+    console.error('Error fetching posts:', error);
     return {
       props: {
-        error: `Error fetching posts: ${err.message}`,
+        posts: [],
       },
     };
   }
