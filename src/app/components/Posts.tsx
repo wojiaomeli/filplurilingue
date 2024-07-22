@@ -14,21 +14,32 @@ const containerStyles = css`
 `;
 
 const Posts = ({ posts }) => {
-  const isLoading = !posts.length;
+  // Utiliser un état pour la gestion du loading
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    // Simuler le chargement ou vérifier si les données sont déjà présentes
+    if (posts.length > 0) {
+      setLoading(false);
+    }
+  }, [posts]);
 
   return (
     <Container css={containerStyles}>
       <Grid container spacing={3}>
-        {isLoading ? (
-          <Grid item xs={12} sm={6} md={4}>
-            <Box>
-              <Skeleton variant="rectangular" width="100%" height={300} />
-              <Skeleton width="60%" />
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
-            </Box>
-          </Grid>
+        {loading ? (
+          // Affichage des Skeletons pendant le chargement
+          Array.from({ length: 3 }).map((_, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Box>
+                <Skeleton variant="rectangular" width="100%" height={300} />
+                <Skeleton width="60%" />
+                <Skeleton />
+                <Skeleton />
+                <Skeleton />
+              </Box>
+            </Grid>
+          ))
         ) : (
           posts.map((post) => (
             <Grid item key={post.id} xs={12} sm={6} md={4}>
