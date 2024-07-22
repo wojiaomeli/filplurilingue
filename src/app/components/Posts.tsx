@@ -1,13 +1,23 @@
-import React from "react";
-import CardPost from "./CardPost";
-import { Grid, Box } from "@mui/material";
-import Skeleton from "@mui/material/Skeleton";
+import React from 'react';
+import CardPost from './CardPost';
+import { Grid, Box, Container } from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
+import { css } from '@emotion/react';
+
+const containerStyles = css`
+  padding: 2rem;
+  margin-top: 2rem;
+  border: 2px solid #f5a623; /* Bordure ambre */
+  border-radius: 12px; /* Coins arrondis */
+  background-color: #ffffff; /* Fond blanc */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère */
+`;
 
 const Posts = ({ posts }) => {
   const isLoading = !posts.length;
 
   return (
-    <div className="posts">
+    <Container css={containerStyles}>
       <Grid container spacing={3}>
         {isLoading ? (
           <Grid item xs={12} sm={6} md={4}>
@@ -27,7 +37,7 @@ const Posts = ({ posts }) => {
           ))
         )}
       </Grid>
-    </div>
+    </Container>
   );
 };
 
