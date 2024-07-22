@@ -23,7 +23,7 @@ const ContainerVideo = () => {
       </div>
       <div style={textContainerStyles}>
         <p>
-          Découvrez nos vidéos et les témoignages d'enseignants dans les sections bilingues francophones. Ces ressources offrent un aperçu précieux des méthodes pédagogiques et des expériences éducatives innovantes, vous permettant ainsi d'explorer diverses approches éducatives, de découvrir les défis et les succès rencontrés par les enseignants, et de vous inspirer pour enrichir votre pratique pédagogique au quotidien.
+          Découvrez nos vidéos et les témoignages d&apos;enseignants dans les sections bilingues francophones. Ces ressources offrent un aperçu précieux des méthodes pédagogiques et des expériences éducatives innovantes, vous permettant ainsi d&apos;explorer diverses approches éducatives, de découvrir les défis et les succès rencontrés par les enseignants, et de vous inspirer pour enrichir votre pratique pédagogique au quotidien.
         </p>
       </div>
     </div>

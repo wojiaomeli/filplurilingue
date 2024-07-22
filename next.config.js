@@ -1,18 +1,6 @@
-const nextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: '/next.js',
-        destination: '/page-daccueil',
-      },
-    ];
-  },
+// next.config.js
+module.exports = {
   images: {
-    domains: ['pplefilstrapi.ciep.fr'],
-  },
-  env: {
-    API_URL: process.env.API_URL,
+    domains: ['pplefilstrapi', 'localhost'], // Ajoutez ici les domaines autorisés sans les préfixes http:// ou https://
   },
 };
-
-module.exports = nextConfig;

@@ -6,12 +6,39 @@ import ContainerJumelage from "../src/app/components/ContainerJumelage";
 import Banner from "../src/app/components/Banner";
 import SocialMediaContainer from "../src/app/components/SocialMediaContainer";
 import Container from "@mui/material/Container";
-import { useRouter } from 'next/router';
 import Navbar from "../src/app/components/Navbar";
 import Footer from "../src/app/components/Footer";
 
-const Home = ({ posts }) => {
-  const parseDate = (dateString) => {
+// Définition du type pour les props
+type PostType = {
+  id: number;
+  attributes: {
+    title: string;
+    resume: any[];
+    publishedAt: string;
+    image?: {
+      data?: {
+        attributes?: {
+          formats?: {
+            small?: {
+              url: string;
+            };
+          };
+          url?: string;
+          alternativeText?: string;
+        };
+      };
+    };
+    slug: string;
+  };
+};
+
+type Props = {
+  posts: PostType[];
+};
+
+const Home: React.FC<Props> = ({ posts }) => {
+  const parseDate = (dateString: string) => {
     const parts = dateString.split("-");
     return Date.parse(`${parts[0]}-${parts[1]}-${parts[2]}`);
   };
@@ -21,7 +48,6 @@ const Home = ({ posts }) => {
   });
 
   const latestPosts = sortedPosts.slice(0, 3);
-  const router = useRouter();
 
   return (
     <div className="App">
@@ -53,7 +79,7 @@ const Home = ({ posts }) => {
 };
 
 export async function getServerSideProps() {
-  const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = process.env.NEXT_PUBLIC_API_URL; // Utilisez NEXT_PUBLIC_API_URL
 
   try {
     const res = await fetch(`${API_URL}/api/posts?populate=*`, {

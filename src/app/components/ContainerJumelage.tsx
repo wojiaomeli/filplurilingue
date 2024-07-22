@@ -10,7 +10,7 @@ const ContainerJumelage = () => {
         <div style={textContainerStyles}>
           <h2 style={titleStyles}>Jumelage Scolaire</h2>
           <p style={descriptionStyles}>
-            Le jumelage scolaire favorise la diversité culturelle et linguistique, en particulier pour l'apprentissage de la langue française. Les projets innovants permettent aux élèves d'explorer le français à travers des échanges virtuels, des collaborations créatives et des activités ludiques.
+            Le jumelage scolaire favorise la diversité culturelle et linguistique, en particulier pour l&apos;apprentissage de la langue française. Les projets innovants permettent aux élèves d&apos;explorer le français à travers des échanges virtuels, des collaborations créatives et des activités ludiques.
           </p>
           <a href="#" style={buttonStyles}>En savoir plus</a>
         </div>

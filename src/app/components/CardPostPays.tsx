@@ -1,22 +1,40 @@
-// src/app/components/CardPostPays.tsx
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, Typography, Button } from '@mui/material';
 import Link from 'next/link';
 import Image from 'next/image';
 
-const CardPostPays = ({ post }) => {
+const CardPostPays = ({ postId }) => {
+  const [post, setPost] = useState(null);
+
+  useEffect(() => {
+    const fetchPostData = async () => {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/posts/${postId}?populate=image`);
+      const data = await res.json();
+      setPost(data);
+    };
+
+    fetchPostData();
+  }, [postId]);
+
+  if (!post) {
+    return <div>Loading...</div>;
+  }
+
   const firstParagraph = post.resume.find((item) => item.type === 'paragraph');
   const truncatedContent = firstParagraph ? `${firstParagraph.children[0].text.substring(0, 300)}...` : '';
   const formattedDate = post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : '';
 
+  const imageUrl = post.image && post.image.data.length > 0
+    ? `${process.env.NEXT_PUBLIC_API_URL}${post.image.data[0].attributes.url}`
+    : null;
+
   return (
     <Card style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'relative', width: '100%', height: 0, paddingTop: '56.25%' }}>
-        {post.image && post.image.data.length > 0 && (
+        {imageUrl && (
           <Image
-            src={`${process.env.NEXT_PUBLIC_API_URL}${post.image.data[0].attributes.url}`}
-            alt={post.image.data[0].attributes.alternativeText}
+            src={imageUrl}
+            alt={post.image.data[0].attributes.alternativeText || 'Image'}
             layout="fill"
             objectFit="cover"
           />
@@ -24,7 +42,7 @@ const CardPostPays = ({ post }) => {
       </div>
       <CardContent style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Typography variant="h5" component="h2" gutterBottom>
-          {post.title ? post.title : 'Titre non disponible'}
+          {post.title || 'Titre non disponible'}
         </Typography>
         <Typography color="text.secondary" gutterBottom>
           {truncatedContent}
