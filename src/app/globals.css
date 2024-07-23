@@ -3,22 +3,12 @@
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
-@layer components{
-  .NavbarLi {
-    @apply hover:text-hoverColor cursor-pointer duration-300;
-  }
-}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 }
-.bg-PurpulFil {
-  
-  height: 80px; /* Hauteur de la bande */
- 
-}
-
 
 .navbar {
   margin-bottom: 40px; /* Ajoute une marge externe en bas */
@@ -110,18 +100,8 @@
   height: auto;
 }
 
-.bg-PurpulFil {
-  height: 20px;
-  background-color: #yourcolor; /* Replace #yourcolor with your actual color code */
-}
 
-.text-customBlue {
-  color: #yourcolor; /* Replace #yourcolor with your actual color code */
-}
-
-.bg-customBlue {
-  background-color: #yourcolor; /* Replace #yourcolor with your actual color code */
-}
+.
 
 .footer .py-2 {
   padding-top: 2rem;

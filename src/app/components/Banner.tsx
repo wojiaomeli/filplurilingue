@@ -1,94 +1,77 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
-import TextEffect from './TextEffect'; // Assurez-vous de corriger le chemin si nécessaire
 
-const BannerContainer = styled.div`
-  width: 100%;
-  padding: 0; /* Retirer le padding */
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-`;
+// Styles pour le composant Banner
+const styles = {
+  container: {
+    position: 'relative', // Position relative pour le positionnement absolu de l'overlay
+    width: '100%',
+    height: '300px', // Hauteur fixe de la bannière
+    overflow: 'hidden', // Masquer les débordements
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    display: 'block',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(3, 112, 225, 0.5)', // Couleur bleue semi-transparente
+    transition: 'opacity 0.5s ease', // Effet de transition
+    opacity: 0, // Masquer l'overlay par défaut
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: 'white',
+    fontSize: '2rem',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  overlayVisible: {
+    opacity: 1, // Afficher l'overlay lorsqu'il est visible
+  },
+  textEffect: {
+    animation: 'fadeIn 2s ease-out', // Animation de texte
+  },
+};
 
-const moveUp = keyframes`
-  from {
+// Keyframes pour l'animation de texte
+const textKeyframes = `
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
     transform: translateY(0);
   }
-  to {
-    transform: translateY(-5px);
-  }
+}
 `;
 
-const ImageContainer = styled.div`
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-  perspective: 1000px;
-  width: 100%; /* Prendre toute la largeur */
-  height: 40vh; /* Prendre toute la hauteur de la vue */
-  margin: 0; /* Pas de marge */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Image = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Remplir le conteneur tout en conservant les proportions */
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  backface-visibility: hidden;
-  opacity: 0.7; /* Réduire l'opacité */
-
-  &:hover {
-    transform: scale(1.1);
-    opacity: 1;
-  }
-`;
-
-const GradientOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.1));
-  mix-blend-mode: overlay;
-  transition: opacity 0.3s ease;
-
-  &:hover {
-    opacity: 0;
-  }
-`;
-
-const TextOverlay = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 1.5em;
-  text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.7);
-  z-index: 1;
-  text-align: center;
-  white-space: pre-line;
-`;
-
-const PhotoMosaic = () => {
-  const image = { src: '/assets/image8.png', alt: 'Image' };
-
+// Composant de la bannière
+const Banner: React.FC = () => {
   return (
-    <BannerContainer>
-      <ImageContainer>
-        <TextOverlay>
-          <TextEffect />
-        </TextOverlay>
-        <Image src={image.src} alt={image.alt} />
-        <GradientOverlay />
-      </ImageContainer>
-    </BannerContainer>
+    <div style={styles.container}>
+      <img
+        src="/assets/image8.png"
+        alt="Image de la bannière"
+        style={styles.image}
+      />
+      <div style={{ ...styles.overlay, ...styles.overlayVisible }}>
+        <div style={styles.textEffect}>
+          Des ressources pour l’enseignement des disciplines dans les sections bilingues francophones
+        </div>
+      </div>
+      <style>
+        {textKeyframes}
+      </style>
+    </div>
   );
 };
 
-export default PhotoMosaic;
+export default Banner;

@@ -8,11 +8,11 @@ const Footer = () => {
     <footer className="footer bg-white relative">
       {/* Bande bleue en haut */}
       <div className="bg-PurpulFil h-20"></div>
-      
+
       {/* Contenu du footer */}
-      <div className="max-w-full mx-auto py-8 px-4 flex justify-between items-center">
+      <div className="max-w-full mx-auto py-8 px-4 flex flex-col md:flex-row justify-between items-center">
         {/* Logo à gauche */}
-        <div>
+        <div className="text-center md:text-left mb-4 md:mb-0">
           <a href="https://lefilplurilingue.org/" target="_blank" rel="noopener noreferrer">
             <Image
               src="/assets/logo fil.svg"
@@ -23,17 +23,19 @@ const Footer = () => {
             />
           </a>
           {/* Adresse */}
-          <div className="text-left text-customBlue mt-4">
+          <div className="text-customBlue mt-4">
             <p className="text-sm">
               1 Avenue Léon Journault 92310 Sèvres<br />
               Téléphone : 01 45 07 60 00<br />
-              <a href="https://www.france-education-international.fr/" target="_blank" rel="noopener noreferrer">https://www.france-education-international.fr/</a>
+              <a href="https://www.france-education-international.fr/" target="_blank" rel="noopener noreferrer">
+                https://www.france-education-international.fr/
+              </a>
             </p>
           </div>
         </div>
-        
+
         {/* Logo à droite */}
-        <div className="relative">
+        <div className="text-center md:text-right">
           <a href="https://lefilplurilingue.org/" target="_blank" rel="noopener noreferrer">
             <Image
               src="/assets/fei-logo.png"
@@ -44,18 +46,26 @@ const Footer = () => {
             />
           </a>
           {/* Texte sous le logo */}
-          <div className="left-0 right-0 text-center text-customBlue mb-4">
+          <div className="text-customBlue mt-4">
             <p>©2025 Le Fil plurilingue</p>
           </div>
         </div>
       </div>
-      
+
       {/* Réseaux sociaux */}
-      <div className="flex justify-end items-center py-1 px-72">
-        <a href="https://www.facebook.com/lefilplurilingue" target="_blank" rel="noopener noreferrer"><FaFacebook className="text-blue-500 text-2xl mr-4" /></a>
-        <a href="https://twitter.com/FilPluri" target="_blank" rel="noopener noreferrer"><FaTimes className="text-black text-2xl mr-4 " /></a>
-        <a href="https://www.youtube.com/channel/UCbmBlgyzXgg9616usvb-BzQ" target="_blank" rel="noopener noreferrer"><FaYoutube className="text-red-500 text-2xl mr-4 " /></a>
-        <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer"><FaLinkedin className="text-[#0077B5] text-2xl" /></a>
+      <div className="flex justify-center md:justify-end items-center py-1 px-8 md:px-80">
+        <a href="https://www.facebook.com/lefilplurilingue" target="_blank" rel="noopener noreferrer">
+          <FaFacebook className="text-blue-500 text-2xl mx-2" />
+        </a>
+        <a href="https://twitter.com/FilPluri" target="_blank" rel="noopener noreferrer">
+          <FaTimes className="text-black text-2xl mx-2" />
+        </a>
+        <a href="https://www.youtube.com/channel/UCbmBlgyzXgg9616usvb-BzQ" target="_blank" rel="noopener noreferrer">
+          <FaYoutube className="text-red-500 text-2xl mx-2" />
+        </a>
+        <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">
+          <FaLinkedin className="text-[#0077B5] text-2xl mx-2" />
+        </a>
       </div>
 
       {/* Trait en bas avec logotype centré */}
@@ -76,8 +86,8 @@ const Footer = () => {
 
       {/* Liens de contact et confidentialité */}
       <div className="bg-white py-1">
-        <div className="max-w-full mx-auto flex justify-start px-72">
-          <ul className="flex space-x-4 text-BluFil text-xs">
+        <div className="max-w-full mx-auto flex flex-col md:flex-row justify-center md:justify-start px-6 md:px-80">
+          <ul className="flex flex-wrap justify-center md:justify-start space-x-4 text-BluFil text-xs">
             <li>
               <Link href="/mentions-legales" passHref legacyBehavior>
                 <span className="text-BluFil cursor-pointer">Mentions légales</span>

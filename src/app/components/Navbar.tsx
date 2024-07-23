@@ -6,7 +6,7 @@ const Navbar = () => {
   const [searchVisible, setSearchVisible] = useState(false);
 
   return (
-    <nav className="navbar mt-5">
+    <nav className="navbar mt-1">
       <div className="relative">
         <Menu searchVisible={searchVisible} setSearchVisible={setSearchVisible} />
       </div>

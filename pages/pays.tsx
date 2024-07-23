@@ -43,10 +43,9 @@ export const getServerSideProps: GetServerSideProps = async () => {
       throw new Error(`Fetch failed with status ${res.status}`);
     }
     const data = await res.json();
-    
-    // Filtrer les posts par catégorie "Pays"
+
     const postsPays = data.data.filter((post: Post) => post.attributes.categorie.data.attributes.nom === 'Pays');
-    
+
     return {
       props: {
         posts: postsPays || [],
@@ -62,39 +61,36 @@ export const getServerSideProps: GetServerSideProps = async () => {
   }
 };
 
-// Styles généraux pour la page
 const pageStyles = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f5f5f5; /* Fond gris clair pour toute la page */
-  min-height: 100vh; /* Hauteur minimale pour couvrir l'écran */
-  padding: 0 1rem; /* Espacement horizontal */
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
 `;
 
-// Styles pour le conteneur des posts
 const containerStyles = css`
-  margin-top: 6rem; /* Augmente l'espace au-dessus du conteneur pour une séparation plus nette */
-  padding: 2rem; /* Espacement intérieur */
-  background-color: #e0e0e0; /* Fond gris clair pour le conteneur des posts */
-  border: 2px solid #c0c0c0; /* Bordure subtile */
-  border-radius: 12px; /* Coins arrondis */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
-  max-width: 1200px; /* Largeur maximale du conteneur */
-  width: 100%; /* Largeur pleine */
-  margin: 6rem auto; /* Centrage et marge automatique, avec plus d'espace en haut */
-  
-  /* Media Queries */
+  padding: 2rem;
+  background-color: #e0e0e0;
+  border: 2px solid #c0c0c0;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  width: 100%;
+  margin: 2rem auto;
+
   @media (max-width: 1200px) {
-    padding: 1.5rem; /* Réduit le padding sur les écrans plus petits */
+    padding: 1.5rem;
   }
 
   @media (max-width: 768px) {
-    padding: 1rem; /* Réduit encore le padding pour les petits écrans */
+    padding: 1rem;
   }
 
   @media (max-width: 480px) {
-    padding: 0.5rem; /* Réduit le padding pour les très petits écrans */
+    padding: 0.5rem;
   }
 `;
 
@@ -105,7 +101,7 @@ const Pays: React.FC<Props> = ({ posts }) => {
     setHydrated(true);
   }, []);
 
-  if (!hydrated) return null; // Évite le rendu avant l'hydratation complète
+  if (!hydrated) return null;
 
   return (
     <div css={pageStyles}>

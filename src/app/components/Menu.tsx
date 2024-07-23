@@ -28,16 +28,16 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
   ];
 
   return (
-    <div className="menu-container bg-white shadow-md">
+    <div className="menu-container bg-white shadow-md" style={{ margin: 0, padding: 0 }}>
       <div className="max-w-screen-xl mx-auto px-4 py-2 flex items-center justify-between">
         {/* Logo */}
         <div className="flex-shrink-0 mr-4">
           <Link href="/" passHref>
             <Image
-              src="/assets/logo fil.svg" // Vérifiez le chemin de l'image
+              src="/assets/logo fil.svg"
               alt="Logo"
-              width={160}  // Ajustez la largeur du logo
-              height={50}  // Ajustez la hauteur du logo
+              width={160}
+              height={50}
             />
           </Link>
         </div>

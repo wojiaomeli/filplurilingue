@@ -20,8 +20,7 @@ const CardPost = ({ post }) => {
   const cardStyles = css`
     display: flex;
     flex-direction: column;
-    height: 100%;
-    max-width: 600px; /* Largeur maximale ajustée */
+    height: 600px; /* Hauteur fixe pour uniformiser les cartes */
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -32,24 +31,14 @@ const CardPost = ({ post }) => {
       transform: translateY(-4px);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     }
-
-    @media (max-width: 768px) {
-      max-width: 100%; /* Largeur maximale pour les écrans plus petits */
-      margin: 16px;
-    }
-
-    @media (max-width: 480px) {
-      margin: 8px;
-      box-shadow: none;
-      border-radius: 8px;
-    }
   `;
 
   const imageContainerStyles = css`
     position: relative;
     width: 100%;
-    padding-top: 60%; /* Augmenter le ratio d'aspect pour une image plus grande */
+    height: 300px; /* Hauteur fixe pour les images */
     background-color: #e0e0e0;
+    overflow: hidden;
   `;
 
   const imageStyles = css`
@@ -74,43 +63,41 @@ const CardPost = ({ post }) => {
   `;
 
   const contentStyles = css`
+    display: flex;
+    flex-direction: column;
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 18px;
+    padding: 16px;
     background-color: #ffffff;
-    display: flex;
-    flex-direction: column;
+    box-sizing: border-box;
   `;
 
   const titleStyles = css`
-    font-size: 1.4rem; /* Taille du titre ajustée */
+    font-size: 1.2rem; /* Ajuste la taille du titre pour plus d'uniformité */
     font-weight: 600;
     margin-bottom: 16px;
-    line-height: 1.4; /* Augmenter l'interligne pour une meilleure lisibilité */
-    color: #333; /* Couleur du titre adoucie */
+    line-height: 1.2; /* Augmente l'interligne pour une meilleure lisibilité */
+    color: #333;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: normal; /* Permet le retour à la ligne */
+    white-space: normal;
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Limiter à trois lignes */
+    -webkit-line-clamp: 2; /* Limite à deux lignes pour plus de cohérence */
     -webkit-box-orient: vertical;
-
-    @media (max-width: 480px) {
-      font-size: 1.2rem;
-    }
   `;
 
   const summaryContainerStyles = css`
+    flex: 1; /* Utilise l'espace restant pour le résumé */
     padding: 16px 0;
     border-top: 1px solid #eee;
-    margin-bottom: 0px; /* Réduit l'espace sous le résumé */
+    margin-bottom: 16px; /* Ajoute de l'espace sous le résumé */
+    display: flex;
+    align-items: flex-start; /* Aligne le résumé en haut */
   `;
 
   const buttonContainerStyles = css`
     display: flex;
     justify-content: flex-end;
-    margin-top: 8px; /* Ajuste l'espace au-dessus du bouton */
+    margin-top: auto; /* Positionne le bouton en bas */
   `;
 
   const buttonStyles = css`
@@ -119,28 +106,23 @@ const CardPost = ({ post }) => {
   `;
 
   const dateWrapperStyles = css`
-    margin-top: auto; /* Force le positionnement en bas */
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    position: relative;
+    margin-top: 16px;
   `;
 
   const dateTextStyles = css`
     color: #333;
     font-size: 12px;
-    margin-bottom: 0; /* Réduit l'espace sous le texte */
-    position: relative;
-    padding-bottom: 4px; /* Espacement pour la ligne rouge */
+    margin-bottom: 0;
+    padding-bottom: 4px;
   `;
 
   const lineStyles = css`
-    width: 60px; /* Réduit la largeur de la ligne rouge */
+    width: 60px;
     height: 2px;
     background-color: red;
-    position: absolute;
-    bottom: 0; /* Positionné juste en dessous du texte */
-    left: 0;
   `;
 
   return (

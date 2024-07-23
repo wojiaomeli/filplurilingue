@@ -13,12 +13,21 @@ const containerStyles = css`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère */
 `;
 
+const postBoxStyles = css`
+  padding: 1.5rem; /* Padding interne pour les articles */
+  border-radius: 8px; /* Coins arrondis pour les articles */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère pour les articles */
+  background-color: #ffffff; /* Fond blanc pour les articles */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Aligner le contenu à l'intérieur du box */
+  height: 100%; /* Assurer une hauteur uniforme */
+`;
+
 const Posts = ({ posts }) => {
-  // Utiliser un état pour la gestion du loading
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    // Simuler le chargement ou vérifier si les données sont déjà présentes
     if (posts.length > 0) {
       setLoading(false);
     }
@@ -28,11 +37,10 @@ const Posts = ({ posts }) => {
     <Container css={containerStyles}>
       <Grid container spacing={3}>
         {loading ? (
-          // Affichage des Skeletons pendant le chargement
           Array.from({ length: 3 }).map((_, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
-              <Box>
-                <Skeleton variant="rectangular" width="100%" height={300} />
+              <Box css={postBoxStyles}>
+                <Skeleton variant="rectangular" width="100%" height={200} />
                 <Skeleton width="60%" />
                 <Skeleton />
                 <Skeleton />
@@ -43,7 +51,9 @@ const Posts = ({ posts }) => {
         ) : (
           posts.map((post) => (
             <Grid item key={post.id} xs={12} sm={6} md={4}>
-              <CardPost post={post.attributes} />
+              <Box css={postBoxStyles}>
+                <CardPost post={post.attributes} />
+              </Box>
             </Grid>
           ))
         )}

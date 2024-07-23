@@ -5,9 +5,9 @@ import PushUpContainer from "../src/app/components/PushUpContainer";
 import ContainerJumelage from "../src/app/components/ContainerJumelage";
 import Banner from "../src/app/components/Banner";
 import SocialMediaContainer from "../src/app/components/SocialMediaContainer";
-import Container from "@mui/material/Container";
 import Navbar from "../src/app/components/Navbar";
 import Footer from "../src/app/components/Footer";
+import Macaron from "../src/app/components/Macaron"; // Importer le composant Macaron
 
 // Définition du type pour les props
 type PostType = {
@@ -52,6 +52,7 @@ const Home: React.FC<Props> = ({ posts }) => {
   return (
     <div className="App">
       <Navbar />
+
       <div className="w-full h-100 bg-banner-bg mb-20">
         <div className="flex flex-wrap gap-10 justify-center mb-10 mx- mt-5">
           <Banner />
@@ -65,15 +66,27 @@ const Home: React.FC<Props> = ({ posts }) => {
         <ContainerJumelage />
       </div>
 
-      <Container className="border border-100 p-8 flex flex-col items-center justify-center">
-        <h1 className="text-4xl font-normal mb-4 text-BluFil text-center p-4">
-          <span className="text-redFil">L</span>es derniers articles
+      {/* Conteneur des Posts */}
+      <div className="mx-auto px-6 py-8 max-w-4xl bg-white border border-gray-300 shadow-md rounded-lg mb-16">
+        <h1 className="text-4xl font-normal mb-8 text-BluFil text-center">
+          <span className="text-redF">L</span>es derniers articles
         </h1>
-        <Posts posts={latestPosts} />
-      </Container>
+        <div className="mt-8 flex flex-col gap-8">
+          <Posts posts={latestPosts} />
+        </div>
+      </div>
 
-      <SocialMediaContainer />
+      {/* Conteneur des Réseaux Sociaux */}
+      <div className="flex justify-center mb-16">
+        <div>
+          <SocialMediaContainer />
+        </div>
+      </div>
+
       <Footer />
+
+      {/* Ajouter le Macaron */}
+      <Macaron />
     </div>
   );
 };
