@@ -1,72 +1,135 @@
-// PostDetail.tsx
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Container, Typography } from "@mui/material";
-import Skeleton from "@mui/material/Skeleton";
+/** @jsxImportSource @emotion/react */
+import React from 'react';
+import { Card, CardContent, Typography, Button } from '@mui/material';
+import Image from 'next/image';
+import { css } from '@emotion/react';
+import Link from 'next/link';
+import { PostAttributes } from '../../../lib/FetchPost';
 
-const PostDetail = () => {
-  const { slug } = useParams<{ slug: string }>();
-  const [post, setPost] = useState<any>(null); // État pour stocker les détails de l'article
-  const [isLoading, setIsLoading] = useState(true); // État pour indiquer si le chargement est en cours
+interface PostDetailProps {
+  post: PostAttributes;
+}
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const API_URL = process.env.REACT_APP_API_URL;
-        const res = await fetch(`${API_URL}/posts?slug=${slug}&populate=*`, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-          },
-        });
+const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
+  const image = post.image?.data?.[0]?.attributes;
+  const imageUrl = image ? `${process.env.NEXT_PUBLIC_API_URL}${image.url}` : null;
+  const imageAlt = image ? image.alternativeText || 'Image non disponible' : 'Image non disponible';
 
-        if (!res.ok) {
-          throw new Error(`Fetch a échoué avec le statut ${res.status}`);
-        }
+  const cardStyles = css`
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
 
-        const data = await res.json();
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+  `;
 
-        if (data && data.data && data.data.length > 0) {
-          setPost(data.data[0]);
-        } else {
-          throw new Error("Aucun article trouvé avec ce slug");
-        }
+  const imageContainerStyles = css`
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background-color: #e0e0e0;
+    overflow: hidden;
+  `;
 
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching post details:", error);
-        setIsLoading(false);
-      }
-    };
+  const imageStyles = css`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  `;
 
-    fetchPost();
-  }, [slug]);
+  const placeholderStyles = css`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: #f5f5f5;
+    color: #9e9e9e;
+    font-size: 1rem;
+    text-align: center;
+  `;
 
-  if (isLoading) {
-    return (
-      <Container>
-        <Skeleton variant="rectangular" width={800} height={400} />
-        <Skeleton />
-        <Skeleton />
-        <Skeleton />
-      </Container>
-    );
-  }
+  const contentStyles = css`
+    padding: 16px;
+    background-color: #ffffff;
+  `;
+
+  const titleStyles = css`
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #333;
+  `;
+
+  const textStyles = css`
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 16px;
+  `;
+
+  const buttonContainerStyles = css`
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+  `;
+
+  const buttonStyles = css`
+    border-radius: 4px;
+    font-weight: 500;
+  `;
+
+  const formattedDate = post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : '';
 
   return (
-    <Container>
-      <Typography variant="h2" gutterBottom>
-        {post && post.attributes.title}
-      </Typography>
-      {post &&
-        post.attributes.content.map((content: any, index: number) => (
-          <Typography key={index} variant="body1" paragraph>
-            {content.children.map((child: any, index: number) => (
-              <span key={index}>{child.text}</span>
-            ))}
+    <Card css={cardStyles}>
+      <div css={imageContainerStyles}>
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={imageAlt}
+            layout="fill"
+            css={imageStyles}
+            placeholder="blur"
+            blurDataURL="/default-image.png"
+          />
+        ) : (
+          <div css={placeholderStyles}>
+            <Typography>Pas d'image disponible</Typography>
+          </div>
+        )}
+      </div>
+      <CardContent css={contentStyles}>
+        <Typography variant="h4" component="h1" css={titleStyles}>
+          {post.title || 'Titre non disponible'}
+        </Typography>
+        <Typography variant="body1" css={textStyles}>
+          {post.content || 'Contenu non disponible'}
+        </Typography>
+        {formattedDate && (
+          <Typography variant="body2" color="textSecondary">
+            Publié le {formattedDate}
           </Typography>
-        ))}
-    </Container>
+        )}
+        <div css={buttonContainerStyles}>
+          <Link href="/posts" passHref>
+            <Button size="small" color="primary" css={buttonStyles}>
+              Retour aux articles
+            </Button>
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

@@ -4,11 +4,15 @@ import { Card, CardContent, Typography, Button } from '@mui/material';
 import Link from 'next/link';
 import Image from 'next/image';
 import { css } from '@emotion/react';
+import { PostAttributes } from '../../../lib/FetchPost'; // Assurez-vous que le chemin est correct
 
-const CardPost = ({ post }) => {
-  // Extraction et formatage des données
-  const firstParagraph = post.resume.find((item) => item.type === 'paragraph');
-  const truncatedContent = firstParagraph ? `${firstParagraph.children[0].text.substring(0, 300)}...` : '';
+const CardPost: React.FC<{ post: PostAttributes }> = ({ post }) => {
+  // Vérifier que post.contenent est défini et obtenir le premier paragraphe
+  const firstParagraph = post.contenent ? post.contenent.find((item) => item.type === 'paragraph') : null;
+  const truncatedContent = firstParagraph
+    ? `${firstParagraph.children[0].text.substring(0, 300)}...`
+    : 'Résumé non disponible';
+  
   const formattedDate = post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : '';
 
   // Récupération des données de l'image
