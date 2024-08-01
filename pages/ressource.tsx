@@ -116,7 +116,7 @@ const titleStyles = css`
   }
 `;
 
-const Classe: React.FC<Props> = ({ posts }) => {
+const Ressources: React.FC<Props> = ({ posts }) => {
   return (
     <div css={pageStyles}>
       <Layout>
@@ -130,4 +130,4 @@ const Classe: React.FC<Props> = ({ posts }) => {
   );
 };
 
-export default Classe;
+export default Ressources;

@@ -7,28 +7,28 @@ import { css } from '@emotion/react';
 const containerStyles = css`
   padding: 2rem;
   margin-top: 2rem;
-  border: 2px solid #f5a623; /* Bordure ambre */
-  border-radius: 12px; /* Coins arrondis */
-  background-color: #ffffff; /* Fond blanc */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère */
+  border: 2px solid #f5a623;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const postBoxStyles = css`
-  padding: 1.5rem; /* Padding interne pour les articles */
-  border-radius: 8px; /* Coins arrondis pour les articles */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère pour les articles */
-  background-color: #ffffff; /* Fond blanc pour les articles */
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Aligner le contenu à l'intérieur du box */
-  height: 100%; /* Assurer une hauteur uniforme */
+  justify-content: space-between;
+  height: 100%;
 `;
 
 const Posts = ({ posts }) => {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    if (posts.length > 0) {
+    if (posts && posts.length > 0) {
       setLoading(false);
     }
   }, [posts]);

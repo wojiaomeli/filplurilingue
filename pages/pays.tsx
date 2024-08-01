@@ -4,6 +4,7 @@ import Layout from '../src/app/components/Layout';
 import Posts from '../src/app/components/Posts';
 import { GetServerSideProps } from 'next';
 import { css } from '@emotion/react';
+import { useRouter } from 'next/router';
 
 interface Post {
   id: number;
@@ -32,23 +33,33 @@ interface Post {
 
 interface Props {
   posts: Post[];
+  currentPage: number;
+  totalPages: number;
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const page = parseInt(context.query.page as string, 10) || 1; // Page courante
 
   try {
-    const res = await fetch(`${API_URL}/api/posts?populate=*`);
+    const res = await fetch(`${API_URL}/api/posts?populate=*&pagination[page]=${page}&pagination[pageSize]=10`);
     if (!res.ok) {
       throw new Error(`Fetch failed with status ${res.status}`);
     }
     const data = await res.json();
 
-    const postsPays = data.data.filter((post: Post) => post.attributes.categorie.data.attributes.nom === 'Pays');
+    console.log('Data from API:', data); // Debugging: Log data from API
+
+    const postsPays = data.data?.filter((post: Post) =>
+      post?.attributes?.categorie?.data?.attributes?.nom === 'Pays'
+    );
+    const totalPages = Math.ceil(data.meta.pagination.total / 10); // Total des pages en fonction du nombre d'éléments
 
     return {
       props: {
         posts: postsPays || [],
+        currentPage: page,
+        totalPages,
       },
     };
   } catch (error) {
@@ -56,6 +67,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
     return {
       props: {
         posts: [],
+        currentPage: 1,
+        totalPages: 1,
       },
     };
   }
@@ -94,8 +107,9 @@ const containerStyles = css`
   }
 `;
 
-const Pays: React.FC<Props> = ({ posts }) => {
+const Pays: React.FC<Props> = ({ posts, currentPage, totalPages }) => {
   const [hydrated, setHydrated] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setHydrated(true);
@@ -103,10 +117,20 @@ const Pays: React.FC<Props> = ({ posts }) => {
 
   if (!hydrated) return null;
 
+  // Construire l'URL pour la page suivante
+  const nextPage = currentPage < totalPages ? `/pays?page=${currentPage + 1}` : null;
+  const prevPage = currentPage > 1 ? `/pays?page=${currentPage - 1}` : null;
+
+  console.log('Posts in Pays component:', posts); // Debugging: Log posts in component
+
   return (
     <div css={pageStyles}>
       <Layout>
-        <BannerPage title="Dispositif par pays" color="rgba(55, 53, 152, 1)" />
+        <BannerPage 
+          title="Dispositif par pays" 
+          color="rgba(55, 53, 152, 1)" 
+          nextPageUrl={nextPage} // URL de la page suivante
+        />
         <div css={containerStyles}>
           <Posts posts={posts} />
         </div>

@@ -7,9 +7,8 @@ const MainContainer = styled.div`
   margin: 40px auto;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 1200px;
+  max-width: 800px; /* Réduit de 1200px à 800px */
 
-  /* Media query pour rendre le contenu responsive */
   @media (max-width: 768px) {
     padding: 10px;
   }
@@ -19,10 +18,10 @@ const Title = styled.h2`
   color: rgba(3, 112, 225, 1);
   text-align: center;
   margin-bottom: 20px;
-  font-size: 2rem;
+  font-size: 1.5rem; /* Réduit de 2rem à 1.5rem */
   &::first-letter {
     color: red;
-    font-size: 3rem;
+    font-size: 2.5rem; /* Réduit de 3rem à 2.5rem */
   }
 `;
 
@@ -32,7 +31,6 @@ const SocialContainer = styled.div`
   gap: 20px;
   padding: 0 20px;
 
-  /* Media query pour rendre le contenu responsive */
   @media (max-width: 768px) {
     flex-direction: column;
   }
@@ -40,26 +38,24 @@ const SocialContainer = styled.div`
 
 const FeedWrapper = styled.div`
   flex: 1;
-  max-width: 500px;
+  max-width: 400px; /* Réduit de 500px à 400px */
   min-width: 300px;
 
-  /* Media query pour rendre le contenu responsive */
   @media (max-width: 768px) {
     max-width: 100%;
   }
 `;
 
 const FacebookContainer = styled.div`
-  background-color: #3b5998; /* Couleur de Facebook */
+  background-color: #3b5998;
   color: white;
-  padding: 10px 0; /* Ajuster le padding */
+  padding: 10px 0;
   display: flex;
   align-items: center;
-  overflow-x: auto; /* Permet le scroll horizontal */
+  overflow-x: auto;
   margin-bottom: 20px;
-  max-width: 100%; /* Occupe toute la largeur */
+  max-width: 100%;
 
-  /* Media query pour rendre le contenu responsive */
   @media (max-width: 768px) {
     flex-direction: column;
     padding: 10px;
@@ -68,11 +64,10 @@ const FacebookContainer = styled.div`
 
 const FacebookEmbed = styled.iframe`
   border: none;
-  width: 500px; /* Largeur fixe des publications */
+  width: 400px; /* Réduit de 500px à 400px */
   height: 600px;
-  margin-right: 20px; /* Espacement entre les publications */
+  margin-right: 20px;
 
-  /* Media query pour rendre le contenu responsive */
   @media (max-width: 768px) {
     width: 100%;
     height: auto;
@@ -82,7 +77,6 @@ const FacebookEmbed = styled.iframe`
 
 const SocialFeedContainer = () => {
   useEffect(() => {
-    // Charger le script du SDK Facebook
     const facebookScript = document.createElement('script');
     facebookScript.src = 'https://connect.facebook.net/en_US/sdk.js';
     facebookScript.async = true;
@@ -92,7 +86,7 @@ const SocialFeedContainer = () => {
       console.log('Facebook script loaded');
       if (window.FB) {
         window.FB.init({
-          appId: 'YOUR_APP_ID', // Remplacer par votre App ID Facebook
+          appId: 'YOUR_APP_ID',
           xfbml: true,
           version: 'v10.0'
         });
@@ -106,7 +100,6 @@ const SocialFeedContainer = () => {
     };
     document.body.appendChild(facebookScript);
 
-    // Cleanup script when component unmounts
     return () => {
       if (facebookScript) {
         document.body.removeChild(facebookScript);
@@ -123,7 +116,7 @@ const SocialFeedContainer = () => {
             className="fb-page"
             data-href="https://www.facebook.com/lefilplurilingue"
             data-tabs="timeline"
-            data-width="500"
+            data-width="400" /* Réduit de 500 à 400 */
             data-height="600"
             data-small-header="false"
             data-adapt-container-width="true"
