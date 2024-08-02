@@ -34,7 +34,7 @@ interface Props {
   posts: Post[];
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   try {
@@ -43,10 +43,10 @@ export const getServerSideProps: GetServerSideProps = async () => {
       throw new Error(`Fetch failed with status ${res.status}`);
     }
     const data = await res.json();
-    
+
     // Filtrer les posts par catégorie "Classe"
-    const postsClasse = data.data.filter((post: Post) => post.attributes.categorie.data.attributes.nom === 'Classe');
-    
+    const postsClasse = data.data.filter((post: Post) => post.attributes.categorie?.data?.attributes?.nom === 'Classe');
+
     return {
       props: {
         posts: postsClasse || [],
@@ -83,7 +83,7 @@ const containerStyles = css`
   max-width: 1200px;
   width: 100%;
   margin: 6rem auto;
-  
+
   @media (max-width: 1200px) {
     padding: 1.5rem;
   }

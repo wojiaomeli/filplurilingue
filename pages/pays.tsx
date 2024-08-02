@@ -21,7 +21,7 @@ interface Post {
         };
       };
     };
-    categorie: {
+    category: {
       data: {
         attributes: {
           nom: string;
@@ -51,7 +51,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     console.log('Data from API:', data); // Debugging: Log data from API
 
     const postsPays = data.data?.filter((post: Post) =>
-      post?.attributes?.categorie?.data?.attributes?.nom === 'Pays'
+      post?.attributes?.category?.data?.attributes?.nom === 'Pays'
     );
     const totalPages = Math.ceil(data.meta.pagination.total / 10); // Total des pages en fonction du nombre d'éléments
 

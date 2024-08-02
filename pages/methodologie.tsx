@@ -44,9 +44,11 @@ export const getServerSideProps: GetServerSideProps = async () => {
     }
     const data = await res.json();
 
+    console.log('Data from API:', data); // Debugging: Log data from API
+
     // Filtrer les posts par catégorie "Méthodologie" et trier par date
     const postsMethodologie = data.data
-      .filter((post: Post) => post.attributes.categorie.data.attributes.nom === 'Methodologie')
+      .filter((post: Post) => post.attributes.categorie.data.attributes.nom === 'Mthodologie')
       .sort((a: Post, b: Post) => {
         return new Date(b.attributes.publishedAt).getTime() - new Date(a.attributes.publishedAt).getTime();
       });
@@ -99,22 +101,6 @@ const containerStyles = css`
 
   @media (max-width: 480px) {
     padding: 0.5rem; /* Réduit le padding pour les très petits écrans */
-  }
-`;
-
-const titleStyles = css`
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #333;
-  text-align: center;
-  margin-bottom: 2rem;
-  
-  @media (max-width: 768px) {
-    font-size: 2rem; /* Ajuste la taille du titre pour les petits écrans */
-  }
-
-  @media (max-width: 480px) {
-    font-size: 1.5rem; /* Ajuste encore pour les très petits écrans */
   }
 `;
 
