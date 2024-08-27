@@ -5,40 +5,76 @@ import Link from 'next/link';
 
 const ArticlePage = () => {
   const router = useRouter();
-  const { slug } = router.query;
+  const { slug } = router.query; // Utiliser slug comme identifiant
   const [article, setArticle] = useState<any>(null);
   const [category, setCategory] = useState<string>('');
   const [relatedPosts, setRelatedPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (slug) {
       const fetchArticle = async () => {
+        setLoading(true);
         try {
-          const articleResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?filters[slug][$eq]=${slug}&populate=*`);
-          if (!articleResponse.ok) {
-            throw new Error('La réponse du réseau n\'était pas correcte');
+          let foundArticle = null;
+          let articleType = '';
+
+          // Liste des endpoints à tester avec slug comme paramètre
+          const endpoints = [
+            `${process.env.NEXT_PUBLIC_API_URL}/api/posts?filters[slug][$eq]=${slug}&populate=*`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/jumelage-scolaires?filters[slug][$eq]=${slug}&populate=*`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/temoignage-videos?filters[slug][$eq]=${slug}&populate=*`
+          ];
+
+          // Tentative de récupération de l'article depuis chaque endpoint
+          for (const endpoint of endpoints) {
+            const response = await fetch(endpoint);
+            console.log('Endpoint:', endpoint); // Affiche l'URL
+            console.log('Response status:', response.status); // Affiche le code de statut
+            const data = await response.json();
+            console.log('Data:', data); // Affiche les données retournées par l'API
+
+            if (data.data && data.data.length > 0) {
+              foundArticle = data.data[0];
+              articleType = endpoint.split('/')[3];
+              break;
+            }
           }
-          const articleData = await articleResponse.json();
-          const articleAttributes = articleData.data[0]?.attributes;
-          setArticle(articleAttributes);
+
+          if (!foundArticle) {
+            throw new Error('Article non trouvé');
+          }
+
+          const articleAttributes = foundArticle.attributes;
+          setArticle({ ...articleAttributes, type: articleType });
           const currentCategory = articleAttributes.category?.data?.attributes?.nom || '';
           setCategory(currentCategory);
 
-          const relatedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?filters[category][nom][$eq]=${currentCategory}&filters[slug][$ne]=${slug}&sort[createdAt]=desc&pagination[limit]=4&populate=*`);
-          if (!relatedResponse.ok) {
-            throw new Error('La réponse du réseau n\'était pas correcte');
+          // Récupération des articles connexes
+          const relatedEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/${articleType}?filters[category][nom][$eq]=${currentCategory}&filters[slug][$ne]=${slug}&sort[createdAt]=desc&pagination[limit]=4&populate=*`;
+          const relatedResponse = await fetch(relatedEndpoint);
+          if (relatedResponse.ok) {
+            const relatedData = await relatedResponse.json();
+            console.log('Related Data:', relatedData); // Affiche les données connexes
+            setRelatedPosts(relatedData.data);
+          } else {
+            throw new Error('Erreur lors de la récupération des articles connexes');
           }
-          const relatedData = await relatedResponse.json();
-          setRelatedPosts(relatedData.data);
-        } catch (error) {
-          console.error('Erreur lors de la récupération des données :', error);
+        } catch (error: any) {
+          setError(error.message);
+        } finally {
+          setLoading(false);
         }
       };
+
       fetchArticle();
     }
   }, [slug]);
 
-  if (!article) return <div>Chargement...</div>;
+  if (loading) return <div>Chargement...</div>;
+  if (error) return <div>{error}</div>;
+  if (!article) return <div>Article non trouvé</div>;
 
   const getCategoryColor = (categoryName: string) => {
     switch (categoryName) {
@@ -59,8 +95,8 @@ const ArticlePage = () => {
     <Layout>
       <div className="article-page">
         <div className="banner" style={{ backgroundColor: getCategoryColor(category) }}>
-          <h1 className="title">{article.title}</h1>
-          <p className="date">{new Date(article.Date).toLocaleDateString()}</p>
+          <h1 className="title">{article.titre}</h1>
+          <p className="date">{new Date(article.date).toLocaleDateString()}</p>
         </div>
         <div className="content-container">
           <div className="image-container">
@@ -70,7 +106,7 @@ const ArticlePage = () => {
               alt={article.image?.data[0]?.attributes?.alternativeText || 'Image de l\'article'}
             />
           </div>
-          <div className="content" dangerouslySetInnerHTML={{ __html: article.article }} />
+          <div className="content" dangerouslySetInnerHTML={{ __html: article.Texte }} />
         </div>
       </div>
 
@@ -90,7 +126,7 @@ const ArticlePage = () => {
                 />
               </div>
               <div className="card-content">
-                <h3 className="card-title">{post.attributes.title}</h3>
+                <h3 className="card-title">{post.attributes.titre}</h3>
                 <Link className="read-more-button" href={`/article/${post.attributes.slug}`}>
                   Lire aussi
                 </Link>
@@ -149,7 +185,6 @@ const ArticlePage = () => {
 
         .image-container {
           text-align: center;
-          margin: 20px 0;
         }
 
         .article-image {
@@ -159,106 +194,80 @@ const ArticlePage = () => {
         }
 
         .content {
-          line-height: 1.8;
-          font-size: 1.1rem;
-          color: #333;
+          font-size: 1rem;
+          line-height: 1.6;
+          margin-top: 20px;
         }
 
         .related-posts {
-          padding: 20px;
-          background-color: #fff;
-          border-radius: 8px;
-          margin-top: 30px;
+          margin-top: 40px;
         }
 
         .related-posts-title {
-          text-align: center;
-          font-size: 1.8rem;
-          margin-bottom: 15px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          font-size: 1.5rem;
+          font-weight: bold;
+          margin-bottom: 20px;
         }
 
         .title-first-letter {
-          color: #e5054a;
-          font-weight: bold;
-          font-size: 2rem;
+          color: #0070f3;
         }
 
         .title-rest {
-          color: #0370e1;
-          font-weight: bold;
-          font-size: 1.8rem;
-          margin-left: 8px;
+          color: #000;
         }
 
         .cards-container {
           display: flex;
           flex-wrap: wrap;
           gap: 20px;
-          justify-content: center;
         }
 
         .card {
-          background: white;
-          border: 1px solid #ddd;
+          background-color: white;
           border-radius: 8px;
           overflow: hidden;
           width: 100%;
-          max-width: 250px;
+          max-width: 300px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          transition: transform 0.3s, box-shadow 0.3s;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .card:hover {
-          transform: scale(1.05);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .card-image-container {
+          position: relative;
           width: 100%;
-          height: 150px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          overflow: hidden;
+          height: 180px;
         }
 
         .card-image {
-          width: 100%;
-          height: auto;
           object-fit: cover;
+          width: 100%;
+          height: 100%;
         }
 
         .card-content {
           padding: 15px;
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          flex-grow: 1;
         }
 
         .card-title {
-          font-size: 1rem;
-          font-weight: bold;
-          margin: 10px 0;
+          font-size: 1.2rem;
+          margin: 0;
+          margin-bottom: 10px;
         }
 
         .read-more-button {
           display: inline-block;
-          padding: 8px 16px;
           font-size: 0.9rem;
-          color: #fff;
-          background-color: #0370e1;
-          border-radius: 4px;
+          color: #0070f3;
           text-decoration: none;
-          text-align: center;
-          margin-top: 10px;
+          border: 1px solid #0070f3;
+          border-radius: 4px;
+          padding: 5px 10px;
+          transition: background-color 0.3s, color 0.3s;
+        }
+
+        .read-more-button:hover {
+          background-color: #0070f3;
+          color: white;
         }
       `}</style>
     </Layout>

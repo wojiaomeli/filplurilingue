@@ -24,7 +24,36 @@ const postBoxStyles = css`
   height: 100%;
 `;
 
-const Posts = ({ posts }) => {
+interface Post {
+  id: number;
+  attributes: {
+    title: string;
+    resume: any[];
+    publishedAt: string;
+    slug: string;
+    image?: {
+      data?: {
+        attributes?: {
+          url?: string;
+          alternativeText?: string;
+        };
+      };
+    };
+    categorie: {
+      data: {
+        attributes: {
+          nom: string;
+        };
+      };
+    };
+  };
+}
+
+interface PostsProps {
+  posts: Post[];
+}
+
+const Posts: React.FC<PostsProps> = ({ posts }) => {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {

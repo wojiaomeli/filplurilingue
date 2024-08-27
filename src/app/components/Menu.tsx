@@ -8,7 +8,7 @@ import { IoMdGlobe } from 'react-icons/io';
 import { BsSearch } from 'react-icons/bs';
 import ScientificCommitteeButton from './ScientificCommitteeButton';
 
-const Menu = ({ searchVisible, setSearchVisible }) => {
+const Menu = () => {
   const [hoveredItem, setHoveredItem] = useState(null);
 
   const handleMouseEnter = (item) => {
@@ -44,40 +44,32 @@ const Menu = ({ searchVisible, setSearchVisible }) => {
 
         {/* Menu */}
         <div className="flex-grow flex items-center justify-center mx-4">
-          {!searchVisible && (
-            <ul className="flex items-center gap-6 uppercase text-xs font-medium">
-              {menuItems.map(item => (
-                <li
-                  key={item.id}
-                  className={`cursor-pointer duration-300 flex items-center ${item.id !== 'ressources' ? (hoveredItem === item.id ? 'bg-blue-600 text-white' : 'bg-white text-black') : ''} ${item.id !== 'ressources' ? 'px-3 py-1 rounded-md' : styles[item.style]}`}
-                  onMouseEnter={() => handleMouseEnter(item.id)}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <Link href={item.link} passHref>
-                    <div className="flex items-center">
-                      {item.icon}
-                      <span className={`ml-1 ${item.id === 'pays' ? 'ml-2' : ''}`}>{item.label}</span>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+          <ul className="flex items-center gap-6 uppercase text-xs font-medium">
+            {menuItems.map(item => (
+              <li
+                key={item.id}
+                className={`cursor-pointer duration-300 flex items-center ${item.id !== 'ressources' ? (hoveredItem === item.id ? 'bg-blue-600 text-white' : 'bg-white text-black') : ''} ${item.id !== 'ressources' ? 'px-3 py-1 rounded-md' : styles[item.style]}`}
+                onMouseEnter={() => handleMouseEnter(item.id)}
+                onMouseLeave={handleMouseLeave}
+              >
+                <Link href={item.link} passHref>
+                  <div className="flex items-center">
+                    {item.icon}
+                    <span className={`ml-1 ${item.id === 'pays' ? 'ml-2' : ''}`}>{item.label}</span>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* Recherche et autres éléments */}
         <div className="flex gap-4 items-center ml-4">
-          <BsSearch
-            className="text-lg hover:text-gray-600 cursor-pointer"
-            onClick={() => setSearchVisible(!searchVisible)}
-          />
-          {searchVisible && (
-            <input
-              type="text"
-              placeholder="Rechercher..."
-              className="w-32 sm:w-40 h-8 bg-white text-black uppercase text-sm font-normal rounded-md border-gray-300 px-2"
+          <Link href="/search" passHref>
+            <BsSearch
+              className="text-lg hover:text-gray-600 cursor-pointer"
             />
-          )}
+          </Link>
           <div className="ml-4">
             <ScientificCommitteeButton />
           </div>

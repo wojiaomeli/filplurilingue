@@ -1,7 +1,9 @@
-import React from 'react';
-import BannerPage from '../src/app/components/BannerPage';
+/** @jsxImportSource @emotion/react */
+import React, { useEffect, useState } from 'react';
 import Layout from '../src/app/components/Layout';
 import Posts from '../src/app/components/Posts';
+import BannerPage from '../src/app/components/BannerPage';
+import FilterBar from '../src/app/components/FilterBar';
 import { GetServerSideProps } from 'next';
 import { css } from '@emotion/react';
 
@@ -20,7 +22,7 @@ interface Post {
         };
       };
     };
-    categorie: {
+    category: {
       data: {
         attributes: {
           nom: string;
@@ -32,30 +34,208 @@ interface Post {
 
 interface Props {
   posts: Post[];
+  currentPage: number;
+  totalPages: number;
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+const pageStyles = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+  margin: 0; /* Assurez-vous qu'il n'y a pas de marge extérieure */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  flex: 1; /* Permet au contenu de prendre l'espace disponible */
+`;
+
+const containerStyles = css`
+  padding: 2rem;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+`;
+
+const gridStyles = css`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+`;
+
+const paginationStyles = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+
+  li {
+    margin: 0 0.25rem;
+  }
+
+  a, span {
+    padding: 0.5rem 1rem;
+    background-color: #0070f3;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+
+    &:hover {
+      background-color: #005bb5;
+    }
+  }
+
+  span.current-page {
+    background-color: #333;
+    color: white;
+  }
+
+  span.ellipsis {
+    padding: 0 0.5rem;
+    color: #999;
+    font-weight: normal;
+    pointer-events: none;
+  }
+`;
+
+const filterBarContainerStyles = css`
+  margin-bottom: 2rem; /* Ajustez la valeur pour augmenter l'espace */
+`;
+
+const Methodologie: React.FC<Props> = ({ posts, currentPage, totalPages }) => {
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  if (!hydrated) return null;
+
+  const createPaginationLinks = () => {
+    const links = [];
+    const maxPagesToShow = 3;
+    const isStart = currentPage <= maxPagesToShow;
+    const isEnd = currentPage > totalPages - maxPagesToShow;
+
+    if (currentPage > 1) {
+      links.push(
+        <li key="prev">
+          <a href={`/methodologie?page=${currentPage - 1}`}>&laquo; Précédent</a>
+        </li>
+      );
+    }
+
+    if (!isStart) {
+      links.push(
+        <li key="1">
+          <a href={`/methodologie?page=1`}>1</a>
+        </li>
+      );
+      if (currentPage > maxPagesToShow + 1) {
+        links.push(
+          <li key="start-ellipsis">
+            <span className="ellipsis">...</span>
+          </li>
+        );
+      }
+    }
+
+    const startPage = isStart ? 1 : currentPage - 1;
+    const endPage = isEnd ? totalPages : currentPage + 1;
+
+    for (let i = startPage; i <= endPage; i++) {
+      links.push(
+        <li key={i}>
+          {i === currentPage ? (
+            <span className="current-page">{i}</span>
+          ) : (
+            <a href={`/methodologie?page=${i}`}>{i}</a>
+          )}
+        </li>
+      );
+    }
+
+    if (!isEnd) {
+      if (currentPage < totalPages - maxPagesToShow) {
+        links.push(
+          <li key="end-ellipsis">
+            <span className="ellipsis">...</span>
+          </li>
+        );
+      }
+      links.push(
+        <li key={totalPages}>
+          <a href={`/methodologie?page=${totalPages}`}>{totalPages}</a>
+        </li>
+      );
+    }
+
+    if (currentPage < totalPages) {
+      links.push(
+        <li key="next">
+          <a href={`/methodologie?page=${currentPage + 1}`}>Suivant &raquo;</a>
+        </li>
+      );
+    }
+
+    return links;
+  };
+
+  return (
+    <div css={pageStyles}>
+      <Layout>
+        <BannerPage 
+          title="Méthodologie" 
+          color="rgba(229, 7, 73, 1)"
+        />
+        <div css={containerStyles}>
+          <div css={filterBarContainerStyles}>
+            <FilterBar onSelect={(filter) => console.log('Selected filter:', filter)} />
+          </div>
+          <div css={gridStyles}>
+            <Posts posts={posts} />
+          </div>
+          <ul css={paginationStyles}>
+            {createPaginationLinks()}
+          </ul>
+        </div>
+      </Layout>
+    </div>
+  );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const page = parseInt(context.query.page as string, 10) || 1;
+  const pageSize = 13;
 
   try {
-    const res = await fetch(`${API_URL}/api/posts?populate=*`);
+    const res = await fetch(`${API_URL}/api/posts?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}`);
     if (!res.ok) {
       throw new Error(`Fetch failed with status ${res.status}`);
     }
     const data = await res.json();
 
-    console.log('Data from API:', data); // Debugging: Log data from API
+    const postsMethodologie = data.data.filter((post: Post) =>
+      post?.attributes?.category?.data?.attributes?.nom === 'Methodologie'
+    );
 
-    // Filtrer les posts par catégorie "Méthodologie" et trier par date
-    const postsMethodologie = data.data
-      .filter((post: Post) => post.attributes.categorie.data.attributes.nom === 'Mthodologie')
-      .sort((a: Post, b: Post) => {
-        return new Date(b.attributes.publishedAt).getTime() - new Date(a.attributes.publishedAt).getTime();
-      });
+    const totalPages = Math.ceil(data.meta.pagination.total / pageSize);
 
     return {
       props: {
-        posts: postsMethodologie || [],
+        posts: postsMethodologie,
+        currentPage: page,
+        totalPages,
       },
     };
   } catch (error) {
@@ -63,59 +243,11 @@ export const getServerSideProps: GetServerSideProps = async () => {
     return {
       props: {
         posts: [],
+        currentPage: 1,
+        totalPages: 1,
       },
     };
   }
-};
-
-// Styles généraux pour la page
-const pageStyles = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #f5f5f5; /* Fond gris clair pour toute la page */
-  min-height: 100vh; /* Hauteur minimale pour couvrir l'écran */
-  padding: 0 1rem; /* Espacement horizontal */
-`;
-
-// Styles pour le conteneur des posts
-const containerStyles = css`
-  margin-top: 6rem; /* Augmente l'espace au-dessus du conteneur pour une séparation plus nette */
-  padding: 2rem; /* Espacement intérieur */
-  background-color: #e0e0e0; /* Fond gris clair pour le conteneur des posts */
-  border: 2px solid #c0c0c0; /* Bordure subtile */
-  border-radius: 12px; /* Coins arrondis */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
-  max-width: 1200px; /* Largeur maximale du conteneur */
-  width: 100%; /* Largeur pleine */
-  margin: 6rem auto; /* Centrage et marge automatique, avec plus d'espace en haut */
-  
-  /* Media Queries */
-  @media (max-width: 1200px) {
-    padding: 1.5rem; /* Réduit le padding sur les écrans plus petits */
-  }
-
-  @media (max-width: 768px) {
-    padding: 1rem; /* Réduit encore le padding pour les petits écrans */
-  }
-
-  @media (max-width: 480px) {
-    padding: 0.5rem; /* Réduit le padding pour les très petits écrans */
-  }
-`;
-
-const Methodologie: React.FC<Props> = ({ posts }) => {
-  return (
-    <div css={pageStyles}>
-      <Layout>
-        <BannerPage title="Méthodologie" color="rgba(229, 7, 73, 1)" />
-        
-        <div css={containerStyles}>
-          <Posts posts={posts} />
-        </div>
-      </Layout>
-    </div>
-  );
 };
 
 export default Methodologie;

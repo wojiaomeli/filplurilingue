@@ -33,6 +33,7 @@ export interface Post {
   attributes: PostAttributes;
 }
 
+// Fonction pour récupérer tous les articles
 export const fetchPosts = async (): Promise<Post[]> => {
   try {
     const response = await fetch(`${API_URL}/api/posts?populate=*`);
@@ -48,6 +49,7 @@ export const fetchPosts = async (): Promise<Post[]> => {
   }
 };
 
+// Fonction pour récupérer un article par son slug
 export const fetchPostBySlug = async (slug: string): Promise<PostAttributes | null> => {
   try {
     const response = await fetch(`${API_URL}/api/posts?filters[slug][$eq]=${slug}&populate=*`);
@@ -59,7 +61,9 @@ export const fetchPostBySlug = async (slug: string): Promise<PostAttributes | nu
 
     if (post && post.categorie?.data?.id) {
       const categoryId = post.categorie.data.id;
-      const relatedPostsResponse = await fetch(`${API_URL}/api/posts?filters[categorie][id][$eq]=${categoryId}&filters[slug][$ne]=${slug}&populate=image&pagination[limit]=5`);
+      const relatedPostsResponse = await fetch(
+        `${API_URL}/api/posts?filters[categorie][id][$eq]=${categoryId}&filters[slug][$ne]=${slug}&populate=image&pagination[limit]=5`
+      );
       if (!relatedPostsResponse.ok) {
         throw new Error('Network response was not ok');
       }
@@ -71,21 +75,6 @@ export const fetchPostBySlug = async (slug: string): Promise<PostAttributes | nu
     return post;
   } catch (error) {
     console.error('Error fetching post by slug:', error);
-    throw error;
-  }
-};
-
-export const fetchAllPosts = async (): Promise<Post[]> => {
-  try {
-    const response = await fetch(`${API_URL}/api/posts?populate=*`);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    console.log('Fetched all posts:', data);
-    return data.data || [];
-  } catch (error) {
-    console.error('Error fetching all posts:', error);
     throw error;
   }
 };

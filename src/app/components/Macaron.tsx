@@ -1,104 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router'; // Utilisation correcte pour Next.js
+import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
-import { useRouter } from 'next/navigation'; // Updated import for Next.js 13+
-import styled from 'styled-components';
 
 const MacaronContainer = styled.div`
   position: fixed;
-  bottom: 20px; // Position en bas de la page
-  right: 20px; // Position à droite de la page
-  width: 80px; // Largeur réduite du macaron
-  height: 80px; // Hauteur réduite du macaron
-  perspective: 1000px;
-  margin: 20px;
-
-  @media (max-width: 768px) {
-    width: 60px; // Ajustement de la largeur pour les écrans plus petits
-    height: 60px; // Ajustement de la hauteur pour les écrans plus petits
-  }
-`;
-
-const MacaronWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  background-color: rgba(229, 7, 73, 1);
-  color: #ffffff;
-  border-radius: 50%;
-  text-align: center;
-  position: relative;
-  cursor: pointer;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
-`;
-
-const FrontFace = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  backface-visibility: hidden;
+  bottom: 20px; /* Position en bas de la page */
+  right: 20px; /* Position à droite de la page */
+  width: 80px; /* Largeur fixe du macaron */
+  height: 80px; /* Hauteur fixe du macaron */
+  background-color: #e60549; /* Couleur du fond */
+  color: #ffffff; /* Couleur du texte */
+  border-radius: 50%; /* Rendre le macaron rond */
   display: flex;
-  justify-content: center;
   align-items: center;
-  background-color: rgba(229, 7, 73, 1);
-`;
-
-const BackFace = styled(FrontFace)`
-  transform: rotateY(180deg);
-`;
-
-const Icon = styled(FontAwesomeIcon)`
-  font-size: 2rem; // Taille de l'icône réduite
-
-  @media (max-width: 768px) {
-    font-size: 1.5rem; // Ajustement de la taille de l'icône pour les écrans plus petits
-  }
-`;
-
-const Text = styled.div`
-  font-size: 0.5rem; // Taille de la police réduite
-
-  @media (max-width: 768px) {
-    font-size: 0.4rem; // Ajustement de la taille de la police pour les écrans plus petits
+  justify-content: center;
+  font-size: 1.5rem; /* Taille du texte / icône */
+  cursor: pointer; /* Curseur en forme de main */
+  z-index: 1000; /* Assurer que le macaron est au-dessus des autres éléments */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Ombre pour profondeur */
+  transition: background-color 0.3s ease, opacity 0.3s ease; /* Transition pour changement de couleur et opacité */
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)}; /* Modifier la visibilité */
+  
+  &:hover {
+    background-color: #c40034; /* Couleur de fond plus sombre au survol */
   }
 `;
 
 const Macaron = () => {
-  const [hovered, setHovered] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const router = useRouter();
 
-  const handleMouseEnter = () => {
-    setHovered(true);
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      // Détecter le défilement
+      if (window.scrollY > 50) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+    };
 
-  const handleMouseLeave = () => {
-    setHovered(false);
-  };
+    // Ajouter un écouteur d'événement pour le défilement
+    window.addEventListener('scroll', handleScroll);
+
+    // Nettoyer l'écouteur d'événement lors du démontage du composant
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleClick = () => {
-    router.push('http://localhost:3000/videoTemoignages');
+    router.push('/Temoignages-videos'); // Navigation vers la page des témoignages vidéos
   };
 
   return (
-    <MacaronContainer>
-      <MacaronWrapper
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleClick}
-        style={{ transform: hovered ? 'rotateY(0deg)' : 'rotateY(180deg)' }}
-      >
-        <FrontFace>
-          {hovered ? (
-            <Text>Témoignages en vidéo</Text>
-          ) : (
-            <Icon icon={faPlay} />
-          )}
-        </FrontFace>
-        <BackFace>
-          <Icon icon={faPlay} />
-        </BackFace>
-      </MacaronWrapper>
+    <MacaronContainer isVisible={isVisible} onClick={handleClick}>
+      <FontAwesomeIcon icon={faPlay} />
     </MacaronContainer>
   );
 };

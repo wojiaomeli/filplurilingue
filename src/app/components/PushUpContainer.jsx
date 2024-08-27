@@ -15,6 +15,7 @@ const PushUpContainer = () => {
           description="Mieux comprendre la méthodologie d’enseignement dans une classe bilingue."
           color="rgba(228, 0, 1, 1)" // Rouge
           icon={<FiSettings className="text-redF text-6xl" />}
+          link="/methodologie" // Ajoutez le lien approprié
           className="pushup"
         />
 
@@ -23,6 +24,7 @@ const PushUpContainer = () => {
           description="Proposer des activités motivantes dans la classe grâce à des fiches pédagogiques."
           color="rgba(253, 205, 0, 1)" // Jaune
           icon={<GrGroup className="text-yellowF text-6xl" />}
+          link="/classe" // Ajoutez le lien approprié
           className="pushup"
         />
 
@@ -31,6 +33,7 @@ const PushUpContainer = () => {
           description="Valoriser et promouvoir la langue française et l’enseignement des disciplines en français."
           color="rgba(126, 179, 1, 1)" // Vert
           icon={<BsMegaphone className="text-greenF text-6xl" />}
+          link="/promotion" // Ajoutez le lien approprié
           className="pushup"
         />
 
@@ -39,6 +42,7 @@ const PushUpContainer = () => {
           description="Connaître les caractéristiques de l’enseignement bilingue francophone par pays."
           color="rgba(93, 0, 115, 1)" // Violet
           icon={<IoMdGlobe className="text-purplF text-6xl" />}
+          link="/pays" // Ajoutez le lien approprié
           className="pushup"
         />
       </div>

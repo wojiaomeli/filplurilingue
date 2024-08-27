@@ -1,6 +1,7 @@
 import React from 'react';
+import Link from 'next/link';
 
-const PushUp = ({ title, description, color, icon }) => {
+const PushUp = ({ title, description, color, icon, link }) => {
   return (
     <div className="push-up-container" style={{ marginBottom: '20px' }}>
       <div className="push-up" style={{ display: 'flex', borderRadius: '0.5rem', overflow: 'hidden', border: '4px solid rgba(0, 0, 0, 0.1)', maxWidth: '100%', animation: 'slideIn 0.5s forwards' }}>
@@ -12,9 +13,11 @@ const PushUp = ({ title, description, color, icon }) => {
           </div>
           {icon && <div style={{ marginBottom: '0.5rem', marginTop: '0.5rem' }}>{icon}</div>}
           <div>
-            <button className="push-up-button" style={{ backgroundColor: color, color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '0.25rem', transition: 'background-color 0.3s, color 0.3s', marginTop: '0.5rem' }}>
-              Découvrir
-            </button>
+            <Link href={link} passHref>
+              <button className="push-up-button" style={{ backgroundColor: color, color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '0.25rem', transition: 'background-color 0.3s, color 0.3s', marginTop: '0.5rem' }}>
+                Découvrir
+              </button>
+            </Link>
           </div>
         </div>
       </div>
