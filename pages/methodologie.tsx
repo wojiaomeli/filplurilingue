@@ -4,6 +4,8 @@ import Layout from '../src/app/components/Layout';
 import Posts from '../src/app/components/Posts';
 import BannerPage from '../src/app/components/BannerPage';
 import FilterBar from '../src/app/components/FilterBar';
+import BackButton from '../src/app/components/BackButton'; // Import du bouton de retour
+import Pagination from '../src/app/components/Pagination'; // Import du composant de pagination
 import { GetServerSideProps } from 'next';
 import { css } from '@emotion/react';
 
@@ -42,73 +44,77 @@ const pageStyles = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f9f9f9;
+  background-color: #ffffff; /* Fond blanc pour la page entière */
   min-height: 100vh;
-  margin: 0; /* Assurez-vous qu'il n'y a pas de marge extérieure */
+  margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  flex: 1; /* Permet au contenu de prendre l'espace disponible */
+  flex: 1;
+`;
+
+const bannerContainerStyles = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: rgba(229, 7, 73, 1); /* Couleur de fond rouge du bandeau */
+  color: white;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1rem; /* Espace entre le bandeau et le conteneur des articles */
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+
+const backButtonStyles = css`
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10; /* Assurez-vous que le bouton est au-dessus du contenu */
+
+  @media (max-width: 768px) {
+    left: 0;
+    top: auto;
+    transform: none; /* Supprimer la transformation sur les petits écrans */
+    margin-bottom: 1rem; /* Ajouter de l'espace en bas sur les petits écrans */
+  }
 `;
 
 const containerStyles = css`
   padding: 2rem;
-  background-color: #ffffff;
+  background-color: #ffffff; /* Fond blanc pour le conteneur des articles */
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   max-width: 100%;
   width: 100%;
-  margin: 0;
+  margin: 0 auto; /* Centrage horizontal */
   box-sizing: border-box;
+  margin-top: 1rem; /* Espace entre le bandeau et le conteneur des articles */
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    margin-top: 1rem; /* Ajuster l'espace au-dessus du conteneur sur les petits écrans */
+  }
+`;
+
+const filterBarContainerStyles = css`
+  margin-bottom: 2rem;
 `;
 
 const gridStyles = css`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
-`;
 
-const paginationStyles = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  list-style: none;
-  padding: 0;
-  margin: 2rem 0;
-
-  li {
-    margin: 0 0.25rem;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr; /* Une colonne sur les petits écrans */
+    gap: 1rem; /* Réduire l'espace entre les cartes sur les petits écrans */
   }
-
-  a, span {
-    padding: 0.5rem 1rem;
-    background-color: #0070f3;
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-    display: inline-block;
-
-    &:hover {
-      background-color: #005bb5;
-    }
-  }
-
-  span.current-page {
-    background-color: #333;
-    color: white;
-  }
-
-  span.ellipsis {
-    padding: 0 0.5rem;
-    color: #999;
-    font-weight: normal;
-    pointer-events: none;
-  }
-`;
-
-const filterBarContainerStyles = css`
-  margin-bottom: 2rem; /* Ajustez la valeur pour augmenter l'espace */
 `;
 
 const Methodologie: React.FC<Props> = ({ posts, currentPage, totalPages }) => {
@@ -120,83 +126,23 @@ const Methodologie: React.FC<Props> = ({ posts, currentPage, totalPages }) => {
 
   if (!hydrated) return null;
 
-  const createPaginationLinks = () => {
-    const links = [];
-    const maxPagesToShow = 3;
-    const isStart = currentPage <= maxPagesToShow;
-    const isEnd = currentPage > totalPages - maxPagesToShow;
-
-    if (currentPage > 1) {
-      links.push(
-        <li key="prev">
-          <a href={`/methodologie?page=${currentPage - 1}`}>&laquo; Précédent</a>
-        </li>
-      );
+  const handlePageChange = (page: number) => {
+    // Assurez-vous que la page est dans les limites
+    if (page >= 1 && page <= totalPages) {
+      window.location.href = `/methodologie?page=${page}`;
     }
-
-    if (!isStart) {
-      links.push(
-        <li key="1">
-          <a href={`/methodologie?page=1`}>1</a>
-        </li>
-      );
-      if (currentPage > maxPagesToShow + 1) {
-        links.push(
-          <li key="start-ellipsis">
-            <span className="ellipsis">...</span>
-          </li>
-        );
-      }
-    }
-
-    const startPage = isStart ? 1 : currentPage - 1;
-    const endPage = isEnd ? totalPages : currentPage + 1;
-
-    for (let i = startPage; i <= endPage; i++) {
-      links.push(
-        <li key={i}>
-          {i === currentPage ? (
-            <span className="current-page">{i}</span>
-          ) : (
-            <a href={`/methodologie?page=${i}`}>{i}</a>
-          )}
-        </li>
-      );
-    }
-
-    if (!isEnd) {
-      if (currentPage < totalPages - maxPagesToShow) {
-        links.push(
-          <li key="end-ellipsis">
-            <span className="ellipsis">...</span>
-          </li>
-        );
-      }
-      links.push(
-        <li key={totalPages}>
-          <a href={`/methodologie?page=${totalPages}`}>{totalPages}</a>
-        </li>
-      );
-    }
-
-    if (currentPage < totalPages) {
-      links.push(
-        <li key="next">
-          <a href={`/methodologie?page=${currentPage + 1}`}>Suivant &raquo;</a>
-        </li>
-      );
-    }
-
-    return links;
   };
 
   return (
     <div css={pageStyles}>
       <Layout>
-        <BannerPage 
-          title="Méthodologie" 
-          color="rgba(229, 7, 73, 1)"
-        />
+        <div css={bannerContainerStyles}>
+          <BackButton css={backButtonStyles} /> {/* Ajout du bouton de retour */}
+          <BannerPage 
+            title="Méthodologie" 
+            color="rgba(229, 7, 73, 1)"
+          />
+        </div>
         <div css={containerStyles}>
           <div css={filterBarContainerStyles}>
             <FilterBar onSelect={(filter) => console.log('Selected filter:', filter)} />
@@ -204,9 +150,11 @@ const Methodologie: React.FC<Props> = ({ posts, currentPage, totalPages }) => {
           <div css={gridStyles}>
             <Posts posts={posts} />
           </div>
-          <ul css={paginationStyles}>
-            {createPaginationLinks()}
-          </ul>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </div>
       </Layout>
     </div>

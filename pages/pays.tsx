@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../src/app/components/Layout';
 import Posts from '../src/app/components/Posts';
 import BannerPage from '../src/app/components/BannerPage';
+import Pagination from '../src/app/components/Pagination';
+import BackButton from '../src/app/components/BackButton';
 import { GetServerSideProps } from 'next';
 import { css } from '@emotion/react';
 
@@ -40,12 +42,36 @@ interface Props {
 const pageStyles = css`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  background-color: #f9f9f9;
-  min-height: 100vh;
-  padding-bottom: 4rem;
+  min-height: 100vh; /* Assure que la page occupe au moins la hauteur de la fenêtre */
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  @media (max-width: 768px) {
+    padding: 0 1rem;
+  }
+`;
+
+const mainContentStyles = css`
+  flex: 1; /* Assure que le contenu principal occupe tout l'espace disponible */
+`;
+
+const bannerStyles = css`
+  width: 100%;
+  background-color: rgba(55, 53, 152, 1);
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Aligne les éléments à gauche et à droite */
+  position: relative;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 1rem 0;
+    text-align: center;
+  }
 `;
 
 const containerStyles = css`
@@ -56,8 +82,15 @@ const containerStyles = css`
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   max-width: 100%;
   width: 100%;
-  margin: 0;
+  margin: 0 auto;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 `;
 
 const gridStyles = css`
@@ -65,99 +98,18 @@ const gridStyles = css`
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
 
-  .post-card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .image-container {
-      width: 100%;
-      height: 150px;
-      padding: 0.5rem;
-      background-color: #f0f0f0;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      border-radius: 8px 8px 0 0;
-      box-sizing: border-box;
-    }
-
-    .content {
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-
-      .title {
-        font-size: 1.25rem;
-        color: #333;
-        margin-bottom: 0.5rem;
-        text-align: left;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .description {
-        color: #666;
-        line-height: 1.5;
-        flex-grow: 1;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .post-meta {
-        margin-top: 0.5rem;
-        font-size: 0.875rem;
-        color: #999;
-      }
-    }
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr; /* Une colonne sur les petits écrans */
+    gap: 1rem;
   }
 `;
 
-const paginationStyles = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  list-style: none;
-  padding: 0;
-  margin: 2rem 0;
+const buttonWrapperStyles = css`
+  margin-left: 1rem; /* Espace entre le bouton et le bord gauche */
 
-  li {
-    margin: 0 0.25rem;
-  }
-
-  a, span {
-    padding: 0.5rem 1rem;
-    background-color: #0070f3;
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-    display: inline-block;
-
-    &:hover {
-      background-color: #005bb5;
-    }
-  }
-
-  span.current-page {
-    background-color: #333;
-    color: white;
-  }
-
-  span.ellipsis {
-    padding: 0 0.5rem;
-    color: #999;
-    font-weight: normal;
-    pointer-events: none;
+  @media (max-width: 768px) {
+    margin-left: 0; /* Pas d'espace sur les petits écrans */
+    margin-bottom: 1rem; /* Espace en bas sur les petits écrans */
   }
 `;
 
@@ -170,90 +122,29 @@ const Pays: React.FC<Props> = ({ posts, currentPage, totalPages }) => {
 
   if (!hydrated) return null;
 
-  const createPaginationLinks = () => {
-    const links = [];
-    const maxPagesToShow = 3;
-    const isStart = currentPage <= maxPagesToShow;
-    const isEnd = currentPage > totalPages - maxPagesToShow;
-
-    if (currentPage > 1) {
-      links.push(
-        <li key="prev">
-          <a href={`/pays?page=${currentPage - 1}`}>&laquo; Précédent</a>
-        </li>
-      );
-    }
-
-    if (!isStart) {
-      links.push(
-        <li key="1">
-          <a href={`/pays?page=1`}>1</a>
-        </li>
-      );
-      if (currentPage > maxPagesToShow + 1) {
-        links.push(
-          <li key="start-ellipsis">
-            <span className="ellipsis">...</span>
-          </li>
-        );
-      }
-    }
-
-    const startPage = isStart ? 1 : currentPage - 1;
-    const endPage = isEnd ? totalPages : currentPage + 1;
-
-    for (let i = startPage; i <= endPage; i++) {
-      links.push(
-        <li key={i}>
-          {i === currentPage ? (
-            <span className="current-page">{i}</span>
-          ) : (
-            <a href={`/pays?page=${i}`}>{i}</a>
-          )}
-        </li>
-      );
-    }
-
-    if (!isEnd) {
-      if (currentPage < totalPages - maxPagesToShow) {
-        links.push(
-          <li key="end-ellipsis">
-            <span className="ellipsis">...</span>
-          </li>
-        );
-      }
-      links.push(
-        <li key={totalPages}>
-          <a href={`/pays?page=${totalPages}`}>{totalPages}</a>
-        </li>
-      );
-    }
-
-    if (currentPage < totalPages) {
-      links.push(
-        <li key="next">
-          <a href={`/pays?page=${currentPage + 1}`}>Suivant &raquo;</a>
-        </li>
-      );
-    }
-
-    return links;
-  };
-
   return (
     <div css={pageStyles}>
       <Layout>
-        <BannerPage 
-          title="Dispositif par pays" 
-          color="rgba(55, 53, 152, 1)" 
-        />
-        <div css={containerStyles}>
-          <div css={gridStyles}>
-            <Posts posts={posts} />
+        <div css={bannerStyles}>
+          <div css={buttonWrapperStyles}>
+            <BackButton />
           </div>
-          <ul css={paginationStyles}>
-            {createPaginationLinks()}
-          </ul>
+          <BannerPage 
+            title="Dispositif par pays" 
+            color="rgba(55, 53, 152, 1)" 
+          />
+        </div>
+        <div css={mainContentStyles}>
+          <div css={containerStyles}>
+            <div css={gridStyles}>
+              <Posts posts={posts} />
+            </div>
+            <Pagination 
+              currentPage={currentPage} 
+              totalPages={totalPages} 
+              onPageChange={(page) => window.location.href = `/pays?page=${page}`}
+            />
+          </div>
         </div>
       </Layout>
     </div>
@@ -263,13 +154,13 @@ const Pays: React.FC<Props> = ({ posts, currentPage, totalPages }) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const page = parseInt(context.query.page as string, 10) || 1;
-  const pageSize = 13; // Vous pouvez ajuster ce nombre selon vos besoins
+  const pageSize = 6; // Nombre d'articles par page
 
   try {
-    // Effectuer la requête API pour récupérer les articles paginés
-    const res = await fetch(`${API_URL}/api/posts?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[0]=publishedAt:desc`);
+    // Effectuer la requête API pour récupérer tous les articles
+    const res = await fetch(`${API_URL}/api/posts?populate=*&sort[0]=publishedAt:desc`);
     if (!res.ok) {
-      throw new Error(`Fetch failed with status ${res.status}`);
+      throw new Error(`Fetch échoué avec le statut ${res.status}`);
     }
     const data = await res.json();
 
@@ -278,19 +169,24 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       post?.attributes?.category?.data?.attributes?.nom === 'Pays'
     );
 
-    // Calcul du nombre total de pages (en fonction des articles filtrés)
-    const totalPosts = data.meta.pagination.total; // Total des articles pour toutes les pages
+    // Calculer le nombre total de pages
+    const totalPosts = postsPays.length; // Total des articles filtrés
     const totalPages = Math.ceil(totalPosts / pageSize);
+
+    // Calculer les articles à afficher pour la page actuelle
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedPosts = postsPays.slice(startIndex, endIndex);
 
     return {
       props: {
-        posts: postsPays,
+        posts: paginatedPosts,
         currentPage: page,
         totalPages,
       },
     };
   } catch (error) {
-    console.error("Error fetching data:", error.message);
+    console.error("Erreur lors de la récupération des données:", error.message);
     return {
       props: {
         posts: [],

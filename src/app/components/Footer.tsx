@@ -10,20 +10,44 @@ const Footer = () => {
       <div className="bg-PurpulFil h-20"></div>
 
       {/* Contenu du footer */}
-      <div className="max-w-full mx-auto py-8 px-4 flex flex-col md:flex-row justify-between items-center">
-        {/* Logo à gauche */}
-        <div className="text-center md:text-left mb-4 md:mb-0">
+      <div className="max-w-full mx-auto py-8 px-4 flex flex-col md:flex-row justify-between items-start">
+        {/* Colonne de gauche pour les logos */}
+        <div className="flex flex-col items-start mb-4 md:mb-0 space-y-4">
+          {/* Logo "Le Fil plurilingue" */}
           <a href="https://lefilplurilingue.org/" target="_blank" rel="noopener noreferrer">
             <Image
               src="/assets/logo fil.svg"
-              alt="Left Logo"
+              alt="Le Fil Plurilingue"
               width={120}
-              height={30}
+              height={40}
               className="footer-logo"
             />
           </a>
-          {/* Adresse */}
-          <div className="text-customBlue mt-4">
+          {/* Logo République Française */}
+          <a href="https://example.com/" target="_blank" rel="noopener noreferrer">
+            <Image
+              src="/assets/logo-republique-francaise.svg"
+              alt="Logo République Française"
+              width={120}
+              height={40}
+              className="footer-logo"
+            />
+          </a>
+        </div>
+
+        {/* Logo à droite avec les informations de contact */}
+        <div className="flex flex-col items-start mb-4 md:mb-0">
+          <a href="https://lefilplurilingue.org/" target="_blank" rel="noopener noreferrer">
+            <Image
+              src="/assets/logo fei.svg"
+              alt="Right Logo"
+              width={120}
+              height={40}
+              className="footer-logo"
+            />
+          </a>
+          {/* Texte sous le logo à droite */}
+          <div className="text-customBlue mt-4 w-full md:w-auto">
             <p className="text-sm">
               1 Avenue Léon Journault 92310 Sèvres<br />
               Téléphone : 01 45 07 60 00<br />
@@ -31,23 +55,6 @@ const Footer = () => {
                 https://www.france-education-international.fr/
               </a>
             </p>
-          </div>
-        </div>
-
-        {/* Logo à droite */}
-        <div className="text-center md:text-right">
-          <a href="https://lefilplurilingue.org/" target="_blank" rel="noopener noreferrer">
-            <Image
-              src="/assets/fei-logo.png"
-              alt="Right Logo"
-              width={120}
-              height={30}
-              className="footer-logo"
-            />
-          </a>
-          {/* Texte sous le logo */}
-          <div className="text-customBlue mt-4">
-            <p>©2025 Le Fil plurilingue</p>
           </div>
         </div>
       </div>

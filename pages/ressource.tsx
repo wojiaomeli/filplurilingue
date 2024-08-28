@@ -2,58 +2,64 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import Layout from '../src/app/components/Layout';
-import { GetServerSideProps } from 'next';
 import { css } from '@emotion/react';
+import { Post } from '../lib/FetchPost';
+import Pagination from '../src/app/components/Pagination';
+import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
 
-// Chargement dynamique des composants pour éviter une hydratation inutile
+// Chargement dynamique des composants
 const BannerPage = dynamic(() => import('../src/app/components/BannerPage'), { ssr: false });
 const Posts = dynamic(() => import('../src/app/components/Posts'), { ssr: false });
-
-interface Post {
-  id: number;
-  attributes: {
-    title: string;
-    resume: any[];
-    publishedAt: string;
-    slug: string;
-    image?: {
-      data?: {
-        attributes?: {
-          url?: string;
-          alternativeText?: string;
-        };
-      };
-    };
-    categorie: {
-      data: {
-        attributes: {
-          nom: string;
-        };
-      };
-    };
-  };
-}
+const BackButton = dynamic(() => import('../src/app/components/BackButton'), { ssr: false });
 
 interface Props {
   posts: Post[];
-  currentPage: number;
   totalPages: number;
+  currentPage: number;
 }
 
 const pageStyles = css`
   display: flex;
   flex-direction: column;
-  min-height: 100vh; 
+  align-items: center;
+  background-color: #ffffff;
+  min-height: 100vh;
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 `;
 
-const mainContentStyles = css`
-  flex: 1;
+const bannerContainerStyles = css`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  background-color: #f9f9f9;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: rgba(3, 112, 225, 1);
+  color: white;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+
+const backButtonStyles = css`
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+
+  @media (max-width: 768px) {
+    left: 0;
+    top: auto;
+    transform: none;
+    margin-bottom: 1rem;
+  }
 `;
 
 const containerStyles = css`
@@ -64,8 +70,14 @@ const containerStyles = css`
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   max-width: 100%;
   width: 100%;
-  margin: 0;
+  margin: 0 auto;
   box-sizing: border-box;
+  margin-top: 1rem;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    margin-top: 1rem;
+  }
 `;
 
 const gridStyles = css`
@@ -73,223 +85,81 @@ const gridStyles = css`
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
 
-  .post-card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .image-container {
-      width: 100%;
-      height: 150px;
-      padding: 0.5rem;
-      background-color: #f0f0f0;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      border-radius: 8px 8px 0 0;
-      box-sizing: border-box;
-    }
-
-    .content {
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-
-      .title {
-        font-size: 1.25rem;
-        color: #333;
-        margin-bottom: 0.5rem;
-        text-align: left;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .description {
-        color: #666;
-        line-height: 1.5;
-        flex-grow: 1;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .post-meta {
-        margin-top: 0.5rem;
-        font-size: 0.875rem;
-        color: #999;
-      }
-    }
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 `;
 
-const paginationStyles = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  list-style: none;
-  padding: 0;
-  margin: 2rem 0;
+const Ressources: React.FC<Props> = ({ posts, totalPages, currentPage }) => {
+  const router = useRouter();
 
-  li {
-    margin: 0 0.25rem;
-  }
+  const handlePageChange = (newPage: number) => {
+    if (newPage === currentPage || newPage < 1 || newPage > totalPages) return;
+    router.push(`/ressource?page=${newPage}`);
+  };
 
-  a, span {
-    padding: 0.5rem 1rem;
-    background-color: #0070f3;
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-    display: inline-block;
-
-    &:hover {
-      background-color: #005bb5;
-    }
-  }
-
-  span.current-page {
-    background-color: #333;
-    color: white;
-  }
-
-  span.ellipsis {
-    padding: 0 0.5rem;
-    color: #999;
-    font-weight: normal;
-    pointer-events: none;
-  }
-`;
-
-const createPaginationLinks = (currentPage: number, totalPages: number) => {
-  const links = [];
-  const maxPagesToShow = 3;
-  const isStart = currentPage <= maxPagesToShow;
-  const isEnd = currentPage > totalPages - maxPagesToShow;
-
-  if (currentPage > 1) {
-    links.push(
-      <li key="prev">
-        <a href={`/ressources?page=${currentPage - 1}`}>&laquo; Précédent</a>
-      </li>
-    );
-  }
-
-  if (!isStart) {
-    links.push(
-      <li key="1">
-        <a href={`/ressources?page=1`}>1</a>
-      </li>
-    );
-    if (currentPage > maxPagesToShow + 1) {
-      links.push(
-        <li key="start-ellipsis">
-          <span className="ellipsis">...</span>
-        </li>
-      );
-    }
-  }
-
-  const startPage = isStart ? 1 : currentPage - 1;
-  const endPage = isEnd ? totalPages : currentPage + 1;
-
-  for (let i = startPage; i <= endPage; i++) {
-    links.push(
-      <li key={i}>
-        {i === currentPage ? (
-          <span className="current-page">{i}</span>
-        ) : (
-          <a href={`/ressources?page=${i}`}>{i}</a>
-        )}
-      </li>
-    );
-  }
-
-  if (!isEnd) {
-    if (currentPage < totalPages - maxPagesToShow) {
-      links.push(
-        <li key="end-ellipsis">
-          <span className="ellipsis">...</span>
-        </li>
-      );
-    }
-    links.push(
-      <li key={totalPages}>
-        <a href={`/ressources?page={totalPages}`}>{totalPages}</a>
-      </li>
-    );
-  }
-
-  if (currentPage < totalPages) {
-    links.push(
-      <li key="next">
-        <a href={`/ressources?page=${currentPage + 1}`}>Suivant &raquo;</a>
-      </li>
-    );
-  }
-
-  return links;
-};
-
-const Ressources: React.FC<Props> = ({ posts, currentPage, totalPages }) => {
   return (
     <div css={pageStyles}>
       <Layout>
-        <BannerPage title="Toutes les ressources" color="rgba(3, 112, 225, 1)" />
-        <div css={mainContentStyles}>
-          <div css={containerStyles}>
-            <div css={gridStyles}>
-              <Posts posts={posts} />
-            </div>
-            <ul css={paginationStyles}>
-              {createPaginationLinks(currentPage, totalPages)}
-            </ul>
+        <div css={bannerContainerStyles}>
+          <BackButton css={backButtonStyles} />
+          <BannerPage 
+            title="Toutes les ressources" 
+            color="rgba(3, 112, 225, 1)"
+          />
+        </div>
+        <div css={containerStyles}>
+          <div css={gridStyles}>
+            <Posts posts={posts} />
           </div>
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            onPageChange={handlePageChange} 
+          />
         </div>
       </Layout>
     </div>
   );
 };
 
+// Fonction pour récupérer les données côté serveur
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const page = parseInt(context.query.page as string, 10) || 1;
-  const pageSize = 6;
+  const page = parseInt(context.query.page as string, 10) || 1; // Page actuelle
+  const pageSize = 6; // Nombre d'articles par page
 
   try {
+    // Faire la requête API pour récupérer les articles avec pagination
     const res = await fetch(`${API_URL}/api/posts?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}`);
+    
     if (!res.ok) {
+      console.error(`Fetch failed with status ${res.status}`);
+      const errorData = await res.json();
+      console.error("API Error Response:", errorData);
       throw new Error(`Fetch failed with status ${res.status}`);
     }
 
     const data = await res.json();
-    const totalPages = Math.ceil(data.meta.pagination.total / pageSize);
-
-    if (page > totalPages) {
-      return {
-        notFound: true,
-      };
-    }
+    const totalItems = data.meta.pagination.total;
+    const totalPages = Math.ceil(totalItems / pageSize); // Calculer le nombre total de pages
 
     return {
       props: {
-        posts: data.data,
-        currentPage: page,
-        totalPages,
+        posts: data.data, // Articles pour la page actuelle
+        totalPages, // Nombre total de pages
+        currentPage: page, // Page actuelle
       },
     };
   } catch (error) {
-    console.error("Error fetching data:", error.message);
+    console.error("Erreur lors de la récupération des données:", error.message);
     return {
-      notFound: true,
+      props: {
+        posts: [], // Liste d'articles vide en cas d'erreur
+        totalPages: 1, // Nombre de pages par défaut
+        currentPage: 1, // Page par défaut en cas d'erreur
+      },
     };
   }
 };

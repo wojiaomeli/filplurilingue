@@ -32,6 +32,7 @@
     "marked": "^14.0.0",
     "next": "^14.2.6",
     "node-fetch": "^3.3.2",
+    "nodemailer": "^6.9.14",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.1.0",
