@@ -109,7 +109,8 @@ const SocialFeedContainer = () => {
 
   return (
     <MainContainer>
-      <Title>Le fil plurilingue sur les réseaux sociaux</Title>
+      <Title>
+        Le fil plurilingue sur les réseaux sociaux</Title>
       <SocialContainer>
         <FeedWrapper>
           <div

@@ -39,6 +39,7 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
   useEffect(() => {
     const fetchRelatedItems = async () => {
       try {
+        // Récupérer les articles connexes en excluant celui en cours
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/temoignage-videos?filters[id][$ne]=${temoignage.id}&sort[createdAt]=desc&pagination[limit]=4&populate=*`);
         if (!response.ok) {
           throw new Error('Erreur de récupération des éléments connexes');
@@ -52,8 +53,9 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
     fetchRelatedItems();
   }, [temoignage.id]);
 
+  // Fonction pour transformer le contenu Markdown en HTML
   const processContent = (content: string) => {
-    return marked(content);
+    return marked(content, { gfm: true, breaks: true });
   };
 
   if (!temoignage) {
@@ -66,15 +68,22 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
             <a>Retour à la liste des témoignages</a>
           </Link>
         </div>
+        <style jsx>{`
+          .error-page {
+            text-align: center;
+            padding: 20px;
+          }
+          .error-page a {
+            color: #0068c8;
+            text-decoration: underline;
+          }
+        `}</style>
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <button className="back-button" onClick={() => window.history.back()}>
-        &#8592;
-      </button>
       <div className="temoignage-detail-page">
         <div className="banner-container">
           <div className="banner">
@@ -83,9 +92,7 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
           </div>
         </div>
         <div className="content-container">
-          <div className="text-content">
-            <div className="article-content" dangerouslySetInnerHTML={{ __html: processContent(temoignage.article) }} />
-          </div>
+          <div className="text-content" dangerouslySetInnerHTML={{ __html: processContent(temoignage.article) }} />
           <div className="image-container">
             {temoignage.image?.data?.[0] && (
               <div className="image-wrapper">
@@ -108,7 +115,7 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
                     src={`${process.env.NEXT_PUBLIC_API_URL}${temoignage.video.data[0].attributes.url}`}
                     type="video/mp4"
                   />
-                  Your browser does not support the video tag.
+                  Votre navigateur ne supporte pas la balise vidéo.
                 </video>
               </div>
             )}
@@ -123,25 +130,27 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
             <span className="title-rest"> consulter aussi</span>
           </h2>
           <div className="cards-container">
-            {relatedItems.map((item: any) => (
-              <div key={item.id} className="card">
-                <div className="card-image-container">
-                  <Image
-                    className="card-image"
-                    src={`${process.env.NEXT_PUBLIC_API_URL}${item.attributes.image?.data[0]?.attributes?.url}`}
-                    alt={item.attributes.image?.data[0]?.attributes?.alternativeText || 'Image de témoignage'}
-                    layout="fill"
-                    objectFit="cover"
-                  />
+            {relatedItems
+              .filter((item: any) => item.id !== temoignage.id) // Assurez-vous que l'article en cours est exclu
+              .map((item: any) => (
+                <div key={item.id} className="card">
+                  <div className="card-image-container">
+                    <Image
+                      className="card-image"
+                      src={`${process.env.NEXT_PUBLIC_API_URL}${item.attributes.image?.data[0]?.attributes?.url}`}
+                      alt={item.attributes.image?.data[0]?.attributes?.alternativeText || 'Image de témoignage'}
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
+                  <div className="card-content">
+                    <h3 className="card-title">{item.attributes.Nom}</h3>
+                    <Link className="read-more-button" href={`/article-temoignage/${item.id}`}>
+                      Lire aussi
+                    </Link>
+                  </div>
                 </div>
-                <div className="card-content">
-                  <h3 className="card-title">{item.attributes.Nom}</h3>
-                  <Link className="read-more-button" href={`/article-temoignage/${item.id}`}>
-                    Lire aussi
-                  </Link>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>
@@ -155,149 +164,82 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
           background-color: #f8f9fa;
         }
         .banner-container {
-          position: relative;
-          margin: 0;
+          display: flex;
+          justify-content: center;
+          margin-top: 20px;
         }
         .banner {
           position: relative;
-          padding: 30px;
+          padding: 20px;
           color: white;
-          text-align: left;
-          border-radius: 12px;
+          text-align: center;
+          border-radius: 12px 12px 0 0; /* Arrondi uniquement en haut */
           background: linear-gradient(135deg, rgba(229, 7, 73, 1), rgba(3, 112, 225, 1));
-          height: 250px;
-          z-index: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
+          height: 180px;
+          width: 100%;
+          max-width: 1000px;
+          box-sizing: border-box;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .title {
           margin: 0;
           font-size: 2.5rem;
-          font-weight: bold;
+          font-weight: 300; /* Police plus fine */
+          text-align: center;
         }
         .date {
           position: absolute;
           bottom: 10px;
           right: 20px;
           font-size: 1.1rem;
-          color: #ffffff;
         }
         .content-container {
           padding: 30px;
           background-color: #ffffff;
-          border-radius: 8px;
+          border-radius: 0 0 12px 12px; /* Arrondi uniquement en bas */
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          margin-top: -10px;
-          z-index: 0;
-          position: relative;
+          margin-top: -10px; /* Ajustement pour coller les conteneurs */
+          border-top: 4px solid #e6e6e6; /* Séparation subtile */
         }
         .text-content {
-          margin-bottom: 30px;
-        }
-        .article-content {
           line-height: 1.8;
           font-size: 1.1rem;
-          color: #333333;
-        }
-        .article-content h1 {
-          font-size: 2.5rem;
-          font-weight: bold;
-          margin-top: 40px;
-          margin-bottom: 20px;
-          color: #111;
-        }
-        .article-content h2 {
-          font-size: 2rem;
-          font-weight: bold;
-          margin-top: 30px;
-          margin-bottom: 15px;
-          color: #444;
-          border-bottom: 2px solid #e0e0e0;
-          padding-bottom: 10px;
-        }
-        .article-content h3 {
-          font-size: 1.75rem;
-          font-weight: bold;
-          margin-top: 30px;
-          margin-bottom: 15px;
-          color: #555;
-        }
-        .article-content h4 {
-          font-size: 1.5rem;
-          font-weight: bold;
-          margin-top: 25px;
-          margin-bottom: 10px;
-          color: #666;
-        }
-        .article-content h5 {
-          font-size: 1.25rem;
-          font-weight: bold;
-          margin-top: 20px;
-          margin-bottom: 10px;
-          color: #777;
-        }
-        .article-content h6 {
-          font-size: 1rem;
-          font-weight: bold;
-          margin-top: 15px;
-          margin-bottom: 10px;
-          color: #888;
-        }
-        .image-container {
-          margin: 40px 0;
-          text-align: center;
-        }
-        .image-wrapper {
-          border-radius: 8px;
-          overflow: hidden;
-        }
-        .video-container {
-          margin: 40px 0;
-        }
-        .video-wrapper {
-          border-radius: 8px;
-          overflow: hidden;
-        }
-        .back-button {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          left: 20px;
-          width: 50px;
-          height: 50px;
-          background-color: white;
           color: #333;
-          border: 2px solid #ccc;
-          border-radius: 8px;
-          text-align: center;
-          font-size: 1.5rem;
-          cursor: pointer;
-          z-index: 1000;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          transition: all 0.3s ease;
         }
-        .back-button:hover {
-          background-color: #f0f0f0;
-          border-color: #999;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        .text-content h2,
+        .text-content h3 {
+          font-weight: bold;
+          margin: 20px 0 10px 0;
+          color: #222;
+        }
+        .text-content h2 {
+          font-size: 1.75rem;
+        }
+        .text-content h3 {
+          font-size: 1.5rem;
+        }
+        .text-content p {
+          margin-bottom: 15px;
+        }
+        .text-content ul,
+        .text-content ol {
+          margin-bottom: 15px;
+          padding-left: 20px;
+        }
+        .text-content li {
+          margin-bottom: 5px;
+        }
+        .image-container, .video-container {
+          margin-top: 20px;
         }
         .related-posts-section {
-          padding: 20px;
-          background-color: #f1f1f1;
-          border-radius: 8px;
-          margin-top: 40px;
+          padding: 40px;
+          background-color: #ffffff; /* Suppression du fond gris */
         }
         .related-posts-title {
-          text-align: center;
           font-size: 1.8rem;
           margin-bottom: 20px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          text-align: center;
         }
         .title-first-letter {
           color: rgba(229, 7, 73, 1);
@@ -307,8 +249,6 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
         .title-rest {
           color: rgba(3, 112, 225, 1);
           font-weight: bold;
-          font-size: 1.8rem;
-          margin-left: 8px;
         }
         .cards-container {
           display: flex;
@@ -317,66 +257,47 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
           justify-content: center;
         }
         .card {
-          background: white;
-          border: 1px solid #ddd;
+          background-color: #ffffff;
           border-radius: 8px;
           overflow: hidden;
-          width: 100%;
-          max-width: 320px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          transition: transform 0.3s, box-shadow 0.3s;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          position: relative;
-        }
-        .card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          width: 250px;
+          text-align: center;
         }
         .card-image-container {
-          width: 100%;
-          height: 180px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          overflow: hidden;
           position: relative;
+          width: 100%;
+          height: 150px;
+          overflow: hidden;
         }
         .card-image {
-          width: 100%;
-          height: auto;
           object-fit: cover;
+          width: 100%;
+          height: 100%;
         }
         .card-content {
-          padding: 20px;
-          text-align: center;
-          background: #fff;
+          padding: 15px;
         }
         .card-title {
-          font-size: 1.4rem;
+          font-size: 1.2rem;
           margin: 0;
-          color: #333;
-          font-weight: 600;
+          color: #333333;
         }
         .read-more-button {
           display: inline-block;
           margin-top: 10px;
-          padding: 10px 20px;
           font-size: 1rem;
-          color: #fff;
-          background-color: rgba(229, 7, 73, 1);
-          border-radius: 5px;
+          color: #0068c8; /* Bleu */
           text-decoration: none;
-          transition: background-color 0.3s, transform 0.2s;
+          border: 1px solid #0068c8; /* Bleu */
+          padding: 8px 12px;
+          border-radius: 4px;
+          background-color: #ffffff;
+          transition: background-color 0.3s, color 0.3s;
         }
         .read-more-button:hover {
-          background-color: rgba(229, 7, 73, 0.8);
-          transform: scale(1.05);
-        }
-        .error-page {
-          text-align: center;
-          padding: 20px;
+          background-color: #0068c8; /* Bleu */
+          color: #ffffff;
         }
       `}</style>
     </Layout>

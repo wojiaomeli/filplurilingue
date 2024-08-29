@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../src/app/components/Layout';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const ArticlePage = () => {
   const router = useRouter();
@@ -15,19 +17,21 @@ const ArticlePage = () => {
       const fetchArticle = async () => {
         try {
           const articleResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?filters[slug][$eq]=${slug}&populate=*`);
-          if (!articleResponse.ok) {
-            throw new Error('La réponse du réseau n\'était pas correcte');
-          }
+          if (!articleResponse.ok) throw new Error('Erreur réseau');
           const articleData = await articleResponse.json();
           const articleAttributes = articleData.data[0]?.attributes;
-          setArticle(articleAttributes);
+          
+          // Assurez-vous que `article.article` est une chaîne de caractères
+          setArticle({
+            ...articleAttributes,
+            article: typeof articleAttributes.article === 'string' ? articleAttributes.article : ''
+          });
+
           const currentCategory = articleAttributes.category?.data?.attributes?.nom || '';
           setCategory(currentCategory);
 
           const relatedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?filters[category][nom][$eq]=${currentCategory}&filters[slug][$ne]=${slug}&sort[createdAt]=desc&pagination[limit]=4&populate=*`);
-          if (!relatedResponse.ok) {
-            throw new Error('La réponse du réseau n\'était pas correcte');
-          }
+          if (!relatedResponse.ok) throw new Error('Erreur réseau');
           const relatedData = await relatedResponse.json();
           setRelatedPosts(relatedData.data);
         } catch (error) {
@@ -42,16 +46,11 @@ const ArticlePage = () => {
 
   const getCategoryColor = (categoryName: string) => {
     switch (categoryName) {
-      case 'Méthodologie':
-        return '#e5054a'; // redFil
-      case 'Promotion':
-        return '#7eb301'; // greenF
-      case 'Classe':
-        return '#fdcd00'; // yellowF
-      case 'Pays':
-        return '#5d0073'; // purplF
-      default:
-        return '#e5054a'; // Couleur par défaut
+      case 'Méthodologie': return '#e5054a';
+      case 'Promotion': return '#7eb301';
+      case 'Classe': return '#fdcd00';
+      case 'Pays': return '#5d0073';
+      default: return '#e5054a';
     }
   };
 
@@ -70,7 +69,10 @@ const ArticlePage = () => {
               alt={article.image?.data[0]?.attributes?.alternativeText || 'Image de l\'article'}
             />
           </div>
-          <div className="content" dangerouslySetInnerHTML={{ __html: article.article }} />
+          {/* Affichage du contenu Markdown */}
+          <ReactMarkdown remarkPlugins={[remarkGfm]} className="content">
+            {article.article}
+          </ReactMarkdown>
         </div>
       </div>
 
@@ -118,26 +120,19 @@ const ArticlePage = () => {
           border-radius: 8px 8px 0 0;
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
-          height: 200px; /* Hauteur ajustée pour contenir le titre et la date */
+          justify-content: center;
+          height: 200px;
         }
 
         .title {
           font-size: 2.5rem;
           font-weight: bold;
           margin: 0;
-          position: absolute;
-          bottom: 40px; /* Positionné au bas avec un espace ajusté */
-          left: 20px; /* Aligné à gauche avec un espace ajusté */
         }
 
         .date {
           font-size: 1rem;
-          color: #ffffff;
-          margin: 0;
-          position: absolute;
-          bottom: 20px; /* Positionné au bas avec un espace ajusté */
-          right: 20px; /* Aligné à droite avec un espace ajusté */
+          margin-top: 10px;
         }
 
         .content-container {
@@ -162,6 +157,67 @@ const ArticlePage = () => {
           line-height: 1.8;
           font-size: 1.1rem;
           color: #333;
+        }
+
+        .content h1 {
+          font-size: 2.5rem;
+          font-weight: bold;
+          margin-top: 1.5rem;
+          margin-bottom: 1rem;
+          color: #0370e1;
+        }
+
+        .content h2 {
+          font-size: 2rem;
+          font-weight: bold;
+          margin-top: 1.5rem;
+          margin-bottom: 1rem;
+          color: #0370e1;
+        }
+
+        .content h3 {
+          font-size: 1.75rem;
+          font-weight: bold;
+          margin-top: 1.5rem;
+          margin-bottom: 1rem;
+          color: #0370e1;
+        }
+
+        .content h4 {
+          font-size: 1.5rem;
+          font-weight: bold;
+          margin-top: 1.5rem;
+          margin-bottom: 1rem;
+          color: #0370e1;
+        }
+
+        .content h5 {
+          font-size: 1.25rem;
+          font-weight: bold;
+          margin-top: 1.5rem;
+          margin-bottom: 1rem;
+          color: #0370e1;
+        }
+
+        .content h6 {
+          font-size: 1rem;
+          font-weight: bold;
+          margin-top: 1.5rem;
+          margin-bottom: 1rem;
+          color: #0370e1;
+        }
+
+        .content p {
+          margin: 0.5rem 0;
+        }
+
+        .content ul, .content ol {
+          margin: 0.5rem 0;
+          padding-left: 1.5rem;
+        }
+
+        .content li {
+          margin-bottom: 0.5rem;
         }
 
         .related-posts {

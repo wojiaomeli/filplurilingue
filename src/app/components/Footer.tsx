@@ -10,20 +10,9 @@ const Footer = () => {
       <div className="bg-PurpulFil h-20"></div>
 
       {/* Contenu du footer */}
-      <div className="max-w-full mx-auto py-8 px-4 flex flex-col md:flex-row justify-between items-start">
-        {/* Colonne de gauche pour les logos */}
-        <div className="flex flex-col items-start mb-4 md:mb-0 space-y-4">
-          {/* Logo "Le Fil plurilingue" */}
-          <a href="https://lefilplurilingue.org/" target="_blank" rel="noopener noreferrer">
-            <Image
-              src="/assets/logo fil.svg"
-              alt="Le Fil Plurilingue"
-              width={120}
-              height={40}
-              className="footer-logo"
-            />
-          </a>
-          {/* Logo République Française */}
+      <div className="max-w-full mx-auto py-8 px-4 flex flex-col md:flex-row justify-between items-center">
+        {/* Logo République Française à gauche */}
+        <div className="flex flex-col items-start mb-4 md:mb-0">
           <a href="https://example.com/" target="_blank" rel="noopener noreferrer">
             <Image
               src="/assets/logo-republique-francaise.svg"
@@ -35,8 +24,26 @@ const Footer = () => {
           </a>
         </div>
 
-        {/* Logo à droite avec les informations de contact */}
-        <div className="flex flex-col items-start mb-4 md:mb-0">
+        {/* Logo "Le Fil plurilingue" avec texte en dessous, centré */}
+        <div className="flex flex-col items-center mb-4 md:mb-0">
+          <a href="https://lefilplurilingue.org/" target="_blank" rel="noopener noreferrer">
+            <Image
+              src="/assets/logo fil.svg"
+              alt="Le Fil Plurilingue"
+              width={120}
+              height={40}
+              className="footer-logo"
+              style={{ marginRight: '10px' }} // Décalage du logo central vers la droite
+            />
+          </a>
+          {/* Texte sous le logo central */}
+          <div className="text-customBlue mt-4 text-center w-full md:w-auto">
+            <p className="text-sm">©2025 Le Fil plurilingue</p>
+          </div>
+        </div>
+
+        {/* Logo à droite */}
+        <div className="flex flex-col items-start mb-4  md:mb-0">
           <a href="https://lefilplurilingue.org/" target="_blank" rel="noopener noreferrer">
             <Image
               src="/assets/logo fei.svg"
@@ -77,7 +84,7 @@ const Footer = () => {
 
       {/* Trait en bas avec logotype centré */}
       <div className="relative">
-        <div className="bg-customBlue h-0.5 w-1/2 mx-auto mb-1"></div>
+      <div className="bg-customBlue h-0.5 w-1/2 mx-auto mb-1"></div>
         <div className="absolute inset-0 flex justify-center items-center">
           <a href="https://lefilplurilingue.org/" target="_blank" rel="noopener noreferrer">
             <Image

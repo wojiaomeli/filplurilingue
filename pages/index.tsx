@@ -68,7 +68,7 @@ const Home: React.FC<Props> = ({ posts }) => {
 
       {/* Conteneur des Posts */}
       <div className="mx-auto px-6 py-8 max-w-4xl bg-white border border-gray-300 shadow-md rounded-lg mb-16">
-        <h1 className="text-4xl font-normal mb-8 text-BluFil text-center">
+        <h1 className="text-6xl font-normal mb-8 text-BluFil text-center">
           <span className="text-redF">L</span>es derniers articles
         </h1>
         <div className="mt-8 flex flex-col gap-8">

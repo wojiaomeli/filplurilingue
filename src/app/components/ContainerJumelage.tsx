@@ -11,11 +11,7 @@ const ContainerJumelage: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > previousScrollY.current) {
-        setScrollDirection('down');
-      } else {
-        setScrollDirection('up');
-      }
+      setScrollDirection(currentScrollY > previousScrollY.current ? 'down' : 'up');
       previousScrollY.current = currentScrollY;
     };
 
@@ -59,23 +55,48 @@ const ContainerJumelage: React.FC = () => {
             ...(isVisible ? (scrollDirection === 'down' ? expandedBlueContainerStyles : collapsedBlueContainerStyles) : collapsedBlueContainerStyles)
           }}
         >
-          <div style={imageContainerStyles}>
+          <div style={dynamicImageContainerStyles(scrollDirection, isVisible)}>
             <Image
               src="/assets/echange.png" // Image du globe
               alt="globe-icon"
               layout="intrinsic"
-              width={180} // Ajustez la taille de l'image pour qu'elle soit moyenne
-              height={180} // Ajustez la taille de l'image pour qu'elle soit moyenne
-              style={globeImageStyles}
+              width={200} // Base width
+              height={200} // Base height
+              style={dynamicImageStyles(scrollDirection, isVisible)}
             />
           </div>
+          <Link href="/formulaire-jumelage" style={linkStyles}>
+            <div style={pillButtonContainerStyles}>
+              <div style={pillButtonStyles}>Demande de Jumelage</div>
+            </div>
+          </Link>
         </div>
       </div>
     </div>
   );
 };
 
-// Conteneur extérieur avec arrière-plan blanc
+// Fonction pour les styles dynamiques du conteneur de l'image
+const dynamicImageContainerStyles = (scrollDirection: 'up' | 'down', isVisible: boolean) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100%', // Occupe toute la hauteur disponible
+  transition: 'transform 0.5s ease-out', // Transition pour le redimensionnement de l'image
+  transform: scrollDirection === 'down' && isVisible ? 'scale(1.2)' : 'scale(1)', // Agrandissement de l'image quand le conteneur bleu se déplace vers le bas
+  zIndex: 1, // Assure que l'image est derrière le bouton
+});
+
+// Fonction pour les styles dynamiques de l'image
+const dynamicImageStyles = (scrollDirection: 'up' | 'down', isVisible: boolean) => ({
+  maxWidth: '80%',
+  height: 'auto',
+  objectFit: 'contain',
+  transition: 'transform 0.5s ease-out',
+  transform: scrollDirection === 'down' && isVisible ? 'scale(1.2)' : 'scale(1)',
+});
+
+// Styles pour le conteneur extérieur avec arrière-plan blanc
 const outerContainerStyles = {
   display: 'flex',
   justifyContent: 'center',
@@ -87,7 +108,7 @@ const outerContainerStyles = {
 // Conteneur pour les éléments décalés
 const containerWrapperStyles = {
   display: 'flex',
-  flexDirection: 'column', // Dispose les éléments en colonne
+  flexDirection: 'column',
   alignItems: 'center',
   position: 'relative',
   maxWidth: '800px',
@@ -97,45 +118,27 @@ const containerWrapperStyles = {
 // Conteneur bleu (avant le défilement)
 const blueContainerStyles = {
   backgroundColor: '#036FE1',
-  borderRadius: '8px',
+  borderRadius: '12px', // Bordure arrondie plus marquée
   color: '#ffffff',
-  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
+  boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2)', // Ombre portée plus douce
   overflow: 'hidden',
   position: 'relative',
-  width: '60%', // Réduit la largeur du conteneur bleu
-  padding: '20px', // Ajustez le padding pour un meilleur ajustement
-  marginTop: '-20px',
+  width: '80%', // Largeur augmentée pour un design plus spacieux
+  padding: '30px',
+  marginTop: '-30px',
   zIndex: 0,
-  transform: 'translateY(0)', // Position de départ
-  transition: 'transform 0.5s ease-out, height 0.5s ease-out', // Transition pour l'effet tiroir
+  transition: 'transform 0.5s ease-out, height 0.5s ease-out',
+  background: 'linear-gradient(135deg, #036FE1 0%, #2A3D6F 100%)', // Dégradé pour un effet moderne
 };
 
 // Conteneur bleu ouvert (déroulé)
 const expandedBlueContainerStyles = {
-  transform: 'translateY(0)', // Assurez-vous qu'il est visible
-  height: '300px', // Ajustez la hauteur pour simuler l'ouverture
+  height: '300px',
 };
 
 // Conteneur bleu fermé (réduit)
 const collapsedBlueContainerStyles = {
-  transform: 'translateY(20px)', // Déplacement vers le bas pour simuler la fermeture
-  height: '150px', // Ajustez la hauteur pour simuler la fermeture
-};
-
-// Styles pour le conteneur de l'image
-const imageContainerStyles = {
-  display: 'flex',
-  justifyContent: 'center', // Centre l'image horizontalement
-  alignItems: 'center', // Centre l'image verticalement
-  height: '100%', // Assure que le conteneur occupe toute la hauteur du conteneur bleu
-};
-
-// Styles pour l'image du globe
-const globeImageStyles = {
-  maxWidth: '90%', // Augmentez la taille de l'image tout en la gardant dans le conteneur
-  height: 'auto',
-  objectFit: 'contain', // Conserve les proportions de l'image
-  imageRendering: 'auto', // Utilisez 'auto' pour une qualité d'image optimale
+  height: '150px',
 };
 
 // Styles pour le conteneur du texte
@@ -153,11 +156,11 @@ const contentContainerStyles = {
 
 // Styles pour le titre avec une typographie audacieuse
 const titleStyles = {
-  fontSize: '28px',
-  fontWeight: '900',
+  fontSize: '30px', // Augmenté pour plus d'impact
+  fontWeight: '700',
   marginBottom: '20px',
   textTransform: 'uppercase',
-  color: '#036FE1', // Titre en bleu
+  color: '#036FE1', // Couleur du texte du titre
 };
 
 // Styles pour la description
@@ -167,12 +170,12 @@ const descriptionStyles = {
   marginBottom: '30px',
 };
 
-// Styles pour le bouton
+// Styles pour le bouton "En savoir plus"
 const buttonStyles = {
   display: 'inline-block',
   padding: '12px 24px',
-  backgroundColor: '#036FE1',
-  color: '#ffffff',
+  backgroundColor: '#ffffff',
+  color: '#036FE1',
   textDecoration: 'none',
   borderRadius: '30px',
   fontWeight: 'bold',
@@ -180,17 +183,47 @@ const buttonStyles = {
   transition: 'background-color 0.3s ease-in-out, transform 0.3s ease-in-out',
   marginTop: '20px',
   textAlign: 'center',
+  border: '2px solid #036FE1', // Bordure du bouton
 };
 
 buttonStyles[':hover'] = {
-  backgroundColor: '#ffffff',
-  color: '#036FE1',
+  backgroundColor: '#036FE1',
+  color: '#ffffff',
   transform: 'scale(1.05)',
 };
 
 // Styles pour le lien (optionnel)
 const linkStyles = {
   textDecoration: 'none',
+};
+
+// Styles pour le conteneur du bouton du formulaire de demande de jumelage
+const pillButtonContainerStyles = {
+  position: 'absolute',
+  bottom: '10px', // Positionné plus bas
+  right: '10px', // Positionné plus à droite
+  zIndex: 2,
+};
+
+// Styles pour le bouton du formulaire de demande de jumelage
+const pillButtonStyles = {
+  display: 'inline-block',
+  padding: '8px 16px', // Réduit la taille du bouton
+  backgroundColor: 'rgba(229, 7, 73, 1)',
+  color: '#ffffff',
+  textDecoration: 'none',
+  borderRadius: '30px',
+  fontWeight: 'bold',
+  cursor: 'pointer',
+  transition: 'background-color 0.3s ease-in-out, transform 0.3s ease-in-out',
+  textAlign: 'center',
+  fontSize: '14px', // Réduit la taille du texte
+};
+
+pillButtonStyles[':hover'] = {
+  backgroundColor: '#ffffff',
+  color: 'rgba(229, 7, 73, 1)',
+  transform: 'scale(1.05)',
 };
 
 export default ContainerJumelage;

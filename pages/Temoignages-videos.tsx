@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import Layout from '../src/app/components/Layout';
 import { GetServerSideProps } from 'next';
 import { css } from '@emotion/react';
-import Link from 'next/link'; // Importez le composant Link de Next.js
+import BackButton from '../src/app/components/BackButton'; // Importez le composant BackButton
 
 // Chargement dynamique des composants pour éviter une hydratation inutile
 const BannerPage = dynamic(() => import('../src/app/components/BannerPage'), { ssr: false });
@@ -26,7 +26,7 @@ interface TemoignagesVideosProps {
           };
         }>;
       };
-      publishedAt: string; // Assurez-vous que la date de publication est incluse
+      publishedAt: string;
     };
   }>;
 }
@@ -65,12 +65,21 @@ const gridStyles = css`
   gap: 1.5rem;
 `;
 
-// Assurez-vous que le composant CardVideo reçoit une propriété 'link' pour le bouton 'Lire plus'
+const bannerContainerStyles = css`
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: rgba(229, 7, 73, 1); /* Couleur du bandeau rouge */
+`;
+
 const TemoignagesVideosPage = ({ temoignages }: TemoignagesVideosProps) => {
   return (
     <div css={pageStyles}>
       <Layout>
-        <BannerPage title="Témoignages et Vidéos" color="rgba(229, 7, 73, 1)" />
+        <div css={bannerContainerStyles}>
+          <BackButton /> {/* Le bouton "Retour" est maintenant à gauche du bandeau rouge */}
+          <BannerPage title="Témoignages et Vidéos" color="rgba(229, 7, 73, 1)" />
+        </div>
         <div css={mainContentStyles}>
           <div css={containerStyles}>
             <div css={gridStyles}>
@@ -79,13 +88,12 @@ const TemoignagesVideosPage = ({ temoignages }: TemoignagesVideosProps) => {
                 const { Nom, image, resume, publishedAt } = attributes;
                 const summary = resume.map(paragraph => paragraph.children.map(child => child.text).join(' ')).join(' ');
 
-                // Vérifiez que `image.data` n'est pas null et a des éléments
                 const imageUrl = image.data && image.data.length > 0 ? `${process.env.NEXT_PUBLIC_API_URL}${image.data[0].attributes.url}` : '';
 
                 return (
                   <CardVideo
                     key={id}
-                    id={id} // Passez l'ID au composant CardVideo
+                    id={id}
                     title={Nom}
                     image={{
                       url: imageUrl,
@@ -94,8 +102,8 @@ const TemoignagesVideosPage = ({ temoignages }: TemoignagesVideosProps) => {
                       alt: image.data && image.data.length > 0 ? image.data[0].attributes.alternativeText || '' : '',
                     }}
                     summary={summary}
-                    videoUrl="" // Ignore la partie vidéo
-                    publicationDate={publishedAt} // Passez la date de publication
+                    videoUrl=""
+                    publicationDate={publishedAt}
                   />
                 );
               })}
