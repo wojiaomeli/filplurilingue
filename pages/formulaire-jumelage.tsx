@@ -3,82 +3,97 @@ import Layout from '../src/app/components/Layout'; // Assurez-vous que le chemin
 
 const styles = {
   container: {
-    fontFamily: 'Arial, sans-serif',
-    margin: '20px',
-    textAlign: 'center',
+    fontFamily: 'Roboto, sans-serif',
+    margin: '20px auto',
+    maxWidth: '800px',
+    padding: '20px',
+    backgroundColor: '#ffffff',
+    borderRadius: '12px',
+    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+    border: '1px solid #e0e0e0',
   },
   title: {
     fontSize: '2em',
     marginBottom: '20px',
+    color: '#333',
+    textAlign: 'center',
   },
   image: {
-    width: '800px', // Augmenter la taille de l'image
+    width: '100%',
+    maxWidth: '700px',
     height: 'auto',
-    marginBottom: '20px',
-    display: 'block', // Centrer l'image
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    display: 'block',
+    margin: '0 auto 20px',
   },
   form: {
     display: 'grid',
-    gap: '25px', // Espacer les questions
-    maxWidth: '800px',
-    margin: '0 auto',
-    textAlign: 'left',
+    gap: '20px',
   },
   fieldset: {
-    border: '1px solid #ccc',
-    padding: '15px',
-    borderRadius: '5px',
+    border: 'none',
+    padding: '0',
+    margin: '0',
   },
   legend: {
     fontWeight: 'bold',
     marginBottom: '10px',
+    fontSize: '1.1em',
+    color: '#555',
   },
   label: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: '20px', // Ajouter de l'espace sous chaque question
+    display: 'block',
+    marginBottom: '10px',
   },
   input: {
-    padding: '8px',
-    marginTop: '5px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    width: '80%', // Réduire la largeur
+    padding: '12px',
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    width: '100%',
+    boxSizing: 'border-box',
+    fontSize: '1em',
+    transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
+    outline: 'none',
   },
   textarea: {
-    padding: '8px',
-    marginTop: '5px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
+    padding: '12px',
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    width: '100%',
+    boxSizing: 'border-box',
+    fontSize: '1em',
+    transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
     resize: 'vertical',
-    width: '80%', // Réduire la largeur
+    outline: 'none',
   },
   select: {
-    padding: '8px',
-    marginTop: '5px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    width: '80%', // Réduire la largeur
+    padding: '12px',
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    width: '100%',
+    boxSizing: 'border-box',
+    fontSize: '1em',
+    transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
+    outline: 'none',
   },
   button: {
-    padding: '10px 20px',
-    backgroundColor: 'rgba(3, 112, 225, 1)',
-    color: 'white',
+    padding: '8px 16px',
+    backgroundColor: 'rgba(229, 7, 73, 1)',
+    color: '#fff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     cursor: 'pointer',
-    fontSize: '1em',
-    marginTop: '15px',
+    fontSize: '0.9em',
+    transition: 'background-color 0.3s ease, transform 0.2s ease',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    marginTop: '10px',
   },
   buttonHover: {
-    backgroundColor: 'rgba(3, 112, 225, 0.8)',
+    backgroundColor: '#b3053d',
   },
   checkboxContainer: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '5px',
+    gap: '8px',
   },
   asterisk: {
     color: 'red',
@@ -140,10 +155,74 @@ const QuestionnaireJumelage: React.FC = () => {
     setFormData({ ...formData, matieresEnseignees: updatedMatieres });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Vous pouvez ajouter ici le code pour envoyer les données à un serveur ou les traiter
-    console.log(formData);
+
+    const airtableEndpoint = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_AIRTABLE_TABLE_NAME}`;
+    const airtableApiKey = process.env.REACT_APP_AIRTABLE_API_KEY || '';
+
+
+    const headers = {
+      'Authorization': `Bearer ${airtableApiKey}`,
+      'Content-Type': 'application/json',
+    };
+
+    const data = {
+      fields: {
+        'Nom': formData.nom,
+        'Fonction': formData.fonction,
+        'Email': formData.email,
+        'Nom de l\'école': formData.ecoleNom,
+        'Adresse de l’école': formData.adresseEcole,
+        'Ville': formData.ville,
+        'Code postal': formData.codePostal,
+        'Pays': formData.pays,
+        'Site web': formData.siteWeb,
+        'Type d’établissement': formData.typeEtablissement,
+        'LabelFrancÉducation': formData.labelFrancEducation,
+        'Sections bilingues': formData.sectionsBilingues.join(', '),
+        'Niveau de la classe': formData.descriptionClasse.niveau,
+        'Nombre d’élèves': formData.descriptionClasse.nombreEleves,
+        'Niveau de français des élèves': formData.descriptionClasse.niveauFrancais,
+        'Matières enseignées': formData.matieresEnseignees.join(', '),
+        'Autres caractéristiques de la classe': formData.descriptionClasse.autresCaracteristiques,
+        'Thèmes d’échanges': formData.themesEchanges,
+        'Durée du projet': formData.dureeProjet,
+        'Date de début du projet': formData.dateDebut,
+        'Description du projet': formData.descriptionProjet,
+      }
+    };
+
+    try {
+      const response = await fetch(airtableEndpoint, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Data sent to Airtable:', result);
+
+      // Envoyer une notification à Teams
+      const teamsWebhookUrl = 'YOUR_TEAMS_WEBHOOK_URL';
+      const teamsMessage = {
+        text: `Un nouveau questionnaire a été soumis : Nom - ${formData.nom}, E-mail - ${formData.email}`,
+      };
+
+      await fetch(teamsWebhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(teamsMessage),
+      });
+
+      alert('Formulaire soumis avec succès!');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
   };
 
   return (
@@ -459,8 +538,8 @@ const QuestionnaireJumelage: React.FC = () => {
           <button
             type="submit"
             style={styles.button}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(3, 112, 225, 0.8)')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(3, 112, 225, 1)')}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#b3053d')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(229, 7, 73, 1)')}
           >
             Envoyer
           </button>

@@ -4,8 +4,8 @@ import Layout from '../src/app/components/Layout';
 import Posts from '../src/app/components/Posts';
 import BannerPage from '../src/app/components/BannerPage';
 import FilterBar from '../src/app/components/FilterBar';
-import BackButton from '../src/app/components/BackButton'; // Import du bouton de retour
-import Pagination from '../src/app/components/Pagination'; // Import du composant de pagination
+import BackButton from '../src/app/components/BackButton';
+import Pagination from '../src/app/components/Pagination';
 import { GetServerSideProps } from 'next';
 import { css } from '@emotion/react';
 
@@ -44,7 +44,7 @@ const pageStyles = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #ffffff; /* Fond blanc pour la page entière */
+  background-color: #ffffff;
   min-height: 100vh;
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -57,16 +57,11 @@ const bannerContainerStyles = css`
   justify-content: center;
   gap: 1rem;
   padding: 1rem;
-  background-color: rgba(229, 7, 73, 1); /* Couleur de fond rouge du bandeau */
+  background-color: rgba(229, 7, 73, 1);
   color: white;
   width: 100%;
   max-width: 100%;
-  margin-bottom: 1rem; /* Espace entre le bandeau et le conteneur des articles */
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: center;
-  }
+  margin-bottom: 1rem;
 `;
 
 const backButtonStyles = css`
@@ -74,47 +69,43 @@ const backButtonStyles = css`
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 10; /* Assurez-vous que le bouton est au-dessus du contenu */
-
-  @media (max-width: 768px) {
-    left: 0;
-    top: auto;
-    transform: none; /* Supprimer la transformation sur les petits écrans */
-    margin-bottom: 1rem; /* Ajouter de l'espace en bas sur les petits écrans */
-  }
+  z-index: 10;
 `;
 
 const containerStyles = css`
   padding: 2rem;
-  background-color: #ffffff; /* Fond blanc pour le conteneur des articles */
+  background-color: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   max-width: 100%;
   width: 100%;
-  margin: 0 auto; /* Centrage horizontal */
+  margin: 0 auto;
   box-sizing: border-box;
-  margin-top: 1rem; /* Espace entre le bandeau et le conteneur des articles */
-
-  @media (max-width: 768px) {
-    padding: 1rem;
-    margin-top: 1rem; /* Ajuster l'espace au-dessus du conteneur sur les petits écrans */
-  }
+  margin-top: 1rem;
 `;
 
 const filterBarContainerStyles = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 2rem;
+`;
+
+const buttonStyles = css`
+  background-color: rgba(229, 7, 73, 1);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
 `;
 
 const gridStyles = css`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr; /* Une colonne sur les petits écrans */
-    gap: 1rem; /* Réduire l'espace entre les cartes sur les petits écrans */
-  }
 `;
 
 const Methodologie: React.FC<Props> = ({ posts, currentPage, totalPages }) => {
@@ -127,25 +118,28 @@ const Methodologie: React.FC<Props> = ({ posts, currentPage, totalPages }) => {
   if (!hydrated) return null;
 
   const handlePageChange = (page: number) => {
-    // Assurez-vous que la page est dans les limites
     if (page >= 1 && page <= totalPages) {
       window.location.href = `/methodologie?page=${page}`;
     }
+  };
+
+  const handleButtonClick = () => {
+    window.location.href = '/Temoignages-videos';
   };
 
   return (
     <div css={pageStyles}>
       <Layout>
         <div css={bannerContainerStyles}>
-          <BackButton css={backButtonStyles} /> {/* Ajout du bouton de retour */}
-          <BannerPage 
-            title="Méthodologie" 
-            color="rgba(229, 7, 73, 1)"
-          />
+          <BackButton css={backButtonStyles} />
+          <BannerPage title="Méthodologie" color="rgba(229, 7, 73, 1)" />
         </div>
         <div css={containerStyles}>
           <div css={filterBarContainerStyles}>
             <FilterBar onSelect={(filter) => console.log('Selected filter:', filter)} />
+            <button css={buttonStyles} onClick={handleButtonClick}>
+              Témoignages & Vidéos
+            </button>
           </div>
           <div css={gridStyles}>
             <Posts posts={posts} />

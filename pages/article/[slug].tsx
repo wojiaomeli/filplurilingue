@@ -1,9 +1,21 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; // Import React
 import { useRouter } from 'next/router';
 import Layout from '../../src/app/components/Layout';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+
+// Composant pour les titres
+const Heading = ({ level, children }: { level: number; children: React.ReactNode }) => {
+  const headingStyle = {
+    fontSize: `${2.5 - level * 0.5}rem`,
+    fontWeight: 'bold',
+    marginTop: '1.5rem',
+    marginBottom: '0.5rem',
+  };
+
+  return React.createElement(`h${level}`, { style: headingStyle }, children);
+};
 
 const ArticlePage = () => {
   const router = useRouter();
@@ -20,13 +32,7 @@ const ArticlePage = () => {
           if (!articleResponse.ok) throw new Error('Erreur réseau');
           const articleData = await articleResponse.json();
           const articleAttributes = articleData.data[0]?.attributes;
-          
-          // Assurez-vous que `article.article` est une chaîne de caractères
-          setArticle({
-            ...articleAttributes,
-            article: typeof articleAttributes.article === 'string' ? articleAttributes.article : ''
-          });
-
+          setArticle(articleAttributes);
           const currentCategory = articleAttributes.category?.data?.attributes?.nom || '';
           setCategory(currentCategory);
 
@@ -56,269 +62,199 @@ const ArticlePage = () => {
 
   return (
     <Layout>
-      <div className="article-page">
-        <div className="banner" style={{ backgroundColor: getCategoryColor(category) }}>
-          <h1 className="title">{article.title}</h1>
-          <p className="date">{new Date(article.Date).toLocaleDateString()}</p>
+      <div style={styles.articlePage}>
+        <div style={{ ...styles.banner, backgroundColor: getCategoryColor(category) }}>
+          <h1 style={styles.title}>{article.title || 'Titre non disponible'}</h1>
+          <p style={styles.date}>{new Date(article.Date).toLocaleDateString() || 'Date non disponible'}</p>
         </div>
-        <div className="content-container">
-          <div className="image-container">
+        <div style={styles.contentContainer}>
+          <div style={styles.imageContainer}>
             <img
-              className="article-image"
-              src={`${process.env.NEXT_PUBLIC_API_URL}${article.image?.data[0]?.attributes?.url}`}
+              style={styles.articleImage}
+              src={`${process.env.NEXT_PUBLIC_API_URL}${article.image?.data[0]?.attributes?.url}` || '/default-image.jpg'}
               alt={article.image?.data[0]?.attributes?.alternativeText || 'Image de l\'article'}
             />
           </div>
-          {/* Affichage du contenu Markdown */}
-          <ReactMarkdown remarkPlugins={[remarkGfm]} className="content">
-            {article.article}
-          </ReactMarkdown>
+
+          {/* Affichage du contenu de l'article en Markdown */}
+          <div style={styles.content}>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h1: (props) => <Heading level={1} {...props} />,
+                h2: (props) => <Heading level={2} {...props} />,
+                h3: (props) => <Heading level={3} {...props} />,
+                h4: (props) => <Heading level={4} {...props} />,
+                h5: (props) => <Heading level={5} {...props} />,
+                h6: (props) => <Heading level={6} {...props} />,
+                // Ajouter d'autres composants si nécessaire pour le rendu Markdown
+              }}
+            >
+              {article.article || ''}
+            </ReactMarkdown>
+          </div>
         </div>
       </div>
 
-      <div className="related-posts">
-        <h2 className="related-posts-title">
-          <span className="title-first-letter">À</span>
-          <span className="title-rest"> consulter aussi</span>
+      <div style={styles.relatedPosts}>
+        <h2 style={styles.relatedPostsTitle}>
+          <span style={styles.titleFirstLetter}>À</span>
+          <span style={styles.titleRest}> consulter aussi</span>
         </h2>
-        <div className="cards-container">
+        <div style={styles.cardsContainer}>
           {relatedPosts.map((post: any) => (
-            <div key={post.id} className="card">
-              <div className="card-image-container">
+            <div key={post.id} style={styles.card}>
+              <div style={styles.cardImageContainer}>
                 <img
-                  className="card-image"
-                  src={`${process.env.NEXT_PUBLIC_API_URL}${post.attributes.image?.data[0]?.attributes?.url}`}
+                  style={styles.cardImage}
+                  src={`${process.env.NEXT_PUBLIC_API_URL}${post.attributes.image?.data[0]?.attributes?.url}` || '/default-image.jpg'}
                   alt={post.attributes.image?.data[0]?.attributes?.alternativeText || 'Image de l\'article'}
                 />
               </div>
-              <div className="card-content">
-                <h3 className="card-title">{post.attributes.title}</h3>
-                <Link className="read-more-button" href={`/article/${post.attributes.slug}`}>
-                  Lire aussi
+              <div style={styles.cardContent}>
+                <h3 style={styles.cardTitle}>{post.attributes.title || 'Titre non disponible'}</h3>
+                <Link href={`/article/${post.attributes.slug}`} legacyBehavior>
+                  <a style={styles.readMoreButton}>Lire aussi</a>
                 </Link>
               </div>
             </div>
           ))}
         </div>
       </div>
-
-      <style jsx>{`
-        .article-page {
-          max-width: 900px;
-          margin: 0 auto;
-          padding: 20px;
-          font-family: 'Helvetica Neue', Arial, sans-serif;
-          background-color: #f4f4f4;
-          border-radius: 8px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .banner {
-          position: relative;
-          padding: 20px;
-          color: white;
-          border-radius: 8px 8px 0 0;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          height: 200px;
-        }
-
-        .title {
-          font-size: 2.5rem;
-          font-weight: bold;
-          margin: 0;
-        }
-
-        .date {
-          font-size: 1rem;
-          margin-top: 10px;
-        }
-
-        .content-container {
-          padding: 20px;
-          background-color: white;
-          border-radius: 8px;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .image-container {
-          text-align: center;
-          margin: 20px 0;
-        }
-
-        .article-image {
-          max-width: 100%;
-          height: auto;
-          border-radius: 8px;
-        }
-
-        .content {
-          line-height: 1.8;
-          font-size: 1.1rem;
-          color: #333;
-        }
-
-        .content h1 {
-          font-size: 2.5rem;
-          font-weight: bold;
-          margin-top: 1.5rem;
-          margin-bottom: 1rem;
-          color: #0370e1;
-        }
-
-        .content h2 {
-          font-size: 2rem;
-          font-weight: bold;
-          margin-top: 1.5rem;
-          margin-bottom: 1rem;
-          color: #0370e1;
-        }
-
-        .content h3 {
-          font-size: 1.75rem;
-          font-weight: bold;
-          margin-top: 1.5rem;
-          margin-bottom: 1rem;
-          color: #0370e1;
-        }
-
-        .content h4 {
-          font-size: 1.5rem;
-          font-weight: bold;
-          margin-top: 1.5rem;
-          margin-bottom: 1rem;
-          color: #0370e1;
-        }
-
-        .content h5 {
-          font-size: 1.25rem;
-          font-weight: bold;
-          margin-top: 1.5rem;
-          margin-bottom: 1rem;
-          color: #0370e1;
-        }
-
-        .content h6 {
-          font-size: 1rem;
-          font-weight: bold;
-          margin-top: 1.5rem;
-          margin-bottom: 1rem;
-          color: #0370e1;
-        }
-
-        .content p {
-          margin: 0.5rem 0;
-        }
-
-        .content ul, .content ol {
-          margin: 0.5rem 0;
-          padding-left: 1.5rem;
-        }
-
-        .content li {
-          margin-bottom: 0.5rem;
-        }
-
-        .related-posts {
-          padding: 20px;
-          background-color: #fff;
-          border-radius: 8px;
-          margin-top: 30px;
-        }
-
-        .related-posts-title {
-          text-align: center;
-          font-size: 1.8rem;
-          margin-bottom: 15px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .title-first-letter {
-          color: #e5054a;
-          font-weight: bold;
-          font-size: 2rem;
-        }
-
-        .title-rest {
-          color: #0370e1;
-          font-weight: bold;
-          font-size: 1.8rem;
-          margin-left: 8px;
-        }
-
-        .cards-container {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 20px;
-          justify-content: center;
-        }
-
-        .card {
-          background: white;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          overflow: hidden;
-          width: 100%;
-          max-width: 250px;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          transition: transform 0.3s, box-shadow 0.3s;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .card:hover {
-          transform: scale(1.05);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .card-image-container {
-          width: 100%;
-          height: 150px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          overflow: hidden;
-        }
-
-        .card-image {
-          width: 100%;
-          height: auto;
-          object-fit: cover;
-        }
-
-        .card-content {
-          padding: 15px;
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          flex-grow: 1;
-        }
-
-        .card-title {
-          font-size: 1rem;
-          font-weight: bold;
-          margin: 10px 0;
-        }
-
-        .read-more-button {
-          display: inline-block;
-          padding: 8px 16px;
-          font-size: 0.9rem;
-          color: #fff;
-          background-color: #0370e1;
-          border-radius: 4px;
-          text-decoration: none;
-          text-align: center;
-          margin-top: 10px;
-        }
-      `}</style>
     </Layout>
   );
+};
+
+const styles = {
+  articlePage: {
+    maxWidth: '900px',
+    margin: '0 auto',
+    padding: '20px',
+    fontFamily: "'Helvetica Neue', Arial, sans-serif",
+    backgroundColor: '#f4f4f4',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+  },
+  banner: {
+    position: 'relative',
+    padding: '20px',
+    color: 'white',
+    borderRadius: '8px 8px 0 0',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    height: '200px',
+  },
+  title: {
+    fontSize: '2.5rem',
+    fontWeight: 'bold',
+    margin: 0,
+  },
+  date: {
+    fontSize: '1rem',
+    marginTop: '10px',
+  },
+  contentContainer: {
+    padding: '20px',
+    backgroundColor: 'white',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+  },
+  imageContainer: {
+    textAlign: 'center',
+    margin: '20px 0',
+  },
+  articleImage: {
+    maxWidth: '100%',
+    height: 'auto',
+    borderRadius: '8px',
+  },
+  content: {
+    lineHeight: 1.8,
+    fontSize: '1.1rem',
+    color: '#333',
+  },
+  relatedPosts: {
+    padding: '20px',
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    marginTop: '30px',
+  },
+  relatedPostsTitle: {
+    textAlign: 'center',
+    fontSize: '1.8rem',
+    marginBottom: '15px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  titleFirstLetter: {
+    color: '#e5054a',
+    fontWeight: 'bold',
+    fontSize: '2rem',
+  },
+  titleRest: {
+    color: '#0370e1',
+    fontWeight: 'bold',
+    fontSize: '1.8rem',
+    marginLeft: '8px',
+  },
+  cardsContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '20px',
+    justifyContent: 'center',
+  },
+  card: {
+    background: 'white',
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    overflow: 'hidden',
+    width: '100%',
+    maxWidth: '250px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    transition: 'transform 0.3s, box-shadow 0.3s',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  cardImageContainer: {
+    width: '100%',
+    height: '150px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  cardImage: {
+    width: '100%',
+    height: 'auto',
+    objectFit: 'cover',
+  },
+  cardContent: {
+    padding: '15px',
+    textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    flexGrow: 1,
+  },
+  cardTitle: {
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    margin: '10px 0',
+  },
+  readMoreButton: {
+    display: 'inline-block',
+    padding: '8px 16px',
+    fontSize: '0.9rem',
+    color: '#fff',
+    backgroundColor: '#0370e1',
+    borderRadius: '4px',
+    textDecoration: 'none',
+    textAlign: 'center',
+    marginTop: '10px',
+  },
 };
 
 export default ArticlePage;

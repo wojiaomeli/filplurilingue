@@ -2,7 +2,21 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../../src/app/components/Layout';
 import Link from 'next/link';
 import Image from 'next/image';
-import { marked } from 'marked';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { useRouter } from 'next/router';
+
+// Composant pour les titres
+const Heading = ({ level, children }: { level: number; children: React.ReactNode }) => {
+  const headingStyle = {
+    fontSize: `${2.5 - level * 0.5}rem`,
+    fontWeight: 'bold',
+    marginTop: '1.5rem',
+    marginBottom: '0.5rem',
+  };
+
+  return React.createElement(`h${level}`, { style: headingStyle }, children);
+};
 
 export const getServerSideProps = async (context: any) => {
   const { id } = context.params;
@@ -35,12 +49,13 @@ export const getServerSideProps = async (context: any) => {
 
 const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
   const [relatedItems, setRelatedItems] = useState<any[]>([]);
+  const router = useRouter();
+  const { id } = router.query;
 
   useEffect(() => {
     const fetchRelatedItems = async () => {
       try {
-        // Récupérer les articles connexes en excluant celui en cours
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/temoignage-videos?filters[id][$ne]=${temoignage.id}&sort[createdAt]=desc&pagination[limit]=4&populate=*`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/temoignage-videos?filters[id][$ne]=${id}&sort[createdAt]=desc&pagination[limit]=4&populate=*`);
         if (!response.ok) {
           throw new Error('Erreur de récupération des éléments connexes');
         }
@@ -51,12 +66,7 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
       }
     };
     fetchRelatedItems();
-  }, [temoignage.id]);
-
-  // Fonction pour transformer le contenu Markdown en HTML
-  const processContent = (content: string) => {
-    return marked(content, { gfm: true, breaks: true });
-  };
+  }, [id]);
 
   if (!temoignage) {
     return (
@@ -92,7 +102,21 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
           </div>
         </div>
         <div className="content-container">
-          <div className="text-content" dangerouslySetInnerHTML={{ __html: processContent(temoignage.article) }} />
+          <div className="text-content">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h1: (props) => <Heading level={1} {...props} />,
+                h2: (props) => <Heading level={2} {...props} />,
+                h3: (props) => <Heading level={3} {...props} />,
+                h4: (props) => <Heading level={4} {...props} />,
+                h5: (props) => <Heading level={5} {...props} />,
+                h6: (props) => <Heading level={6} {...props} />,
+              }}
+            >
+              {temoignage.article || ''}
+            </ReactMarkdown>
+          </div>
           <div className="image-container">
             {temoignage.image?.data?.[0] && (
               <div className="image-wrapper">
@@ -123,6 +147,7 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
         </div>
       </div>
 
+      {/* Section À consulter aussi en dehors du conteneur principal */}
       <div className="related-posts-section">
         <div className="related-posts">
           <h2 className="related-posts-title">
@@ -131,7 +156,7 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
           </h2>
           <div className="cards-container">
             {relatedItems
-              .filter((item: any) => item.id !== temoignage.id) // Assurez-vous que l'article en cours est exclu
+              .filter((item: any) => item.id !== temoignage.id)
               .map((item: any) => (
                 <div key={item.id} className="card">
                   <div className="card-image-container">
@@ -145,7 +170,7 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
                   </div>
                   <div className="card-content">
                     <h3 className="card-title">{item.attributes.Nom}</h3>
-                    <Link className="read-more-button" href={`/article-temoignage/${item.id}`}>
+                    <Link className="read-more-button" href={`/temoignage-videos/${item.id}`}>
                       Lire aussi
                     </Link>
                   </div>
@@ -157,11 +182,13 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
 
       <style jsx>{`
         .temoignage-detail-page {
-          max-width: 1000px;
+          max-width: 900px;
           margin: 0 auto;
-          padding: 0;
-          font-family: 'Roboto', sans-serif;
-          background-color: #f8f9fa;
+          padding: 20px;
+          font-family: 'Helvetica Neue', Arial, sans-serif;
+          background-color: #f4f4f4;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .banner-container {
           display: flex;
@@ -172,19 +199,18 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
           position: relative;
           padding: 20px;
           color: white;
-          text-align: center;
-          border-radius: 12px 12px 0 0; /* Arrondi uniquement en haut */
+          border-radius: 8px 8px 0 0;
           background: linear-gradient(135deg, rgba(229, 7, 73, 1), rgba(3, 112, 225, 1));
-          height: 180px;
+          height: 200px;
           width: 100%;
-          max-width: 1000px;
+          max-width: 900px;
           box-sizing: border-box;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .title {
           margin: 0;
           font-size: 2.5rem;
-          font-weight: 300; /* Police plus fine */
+          font-weight: bold;
           text-align: center;
         }
         .date {
@@ -194,61 +220,58 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
           font-size: 1.1rem;
         }
         .content-container {
-          padding: 30px;
+          padding: 20px;
           background-color: #ffffff;
-          border-radius: 0 0 12px 12px; /* Arrondi uniquement en bas */
+          border-radius: 8px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          margin-top: -10px; /* Ajustement pour coller les conteneurs */
-          border-top: 4px solid #e6e6e6; /* Séparation subtile */
+          margin-top: -10px;
+          border-top: 4px solid #e6e6e6;
         }
         .text-content {
           line-height: 1.8;
           font-size: 1.1rem;
           color: #333;
         }
-        .text-content h2,
-        .text-content h3 {
-          font-weight: bold;
-          margin: 20px 0 10px 0;
-          color: #222;
+        .text-content h1, .text-content h2, .text-content h3, .text-content h4, .text-content h5, .text-content h6 {
+          margin: 0.5rem 0;
         }
-        .text-content h2 {
-          font-size: 1.75rem;
+        .image-container {
+          text-align: center;
+          margin: 20px 0;
         }
-        .text-content h3 {
-          font-size: 1.5rem;
+        .image-wrapper {
+          max-width: 100%;
+          height: auto;
+          border-radius: 8px;
         }
-        .text-content p {
-          margin-bottom: 15px;
+        .video-container {
+          margin: 20px 0;
         }
-        .text-content ul,
-        .text-content ol {
-          margin-bottom: 15px;
-          padding-left: 20px;
-        }
-        .text-content li {
-          margin-bottom: 5px;
-        }
-        .image-container, .video-container {
-          margin-top: 20px;
+        .video-wrapper {
+          max-width: 100%;
         }
         .related-posts-section {
-          padding: 40px;
-          background-color: #ffffff; /* Suppression du fond gris */
+          margin: 30px auto; /* Ajouté un espace au-dessus pour la séparation */
+          max-width: 900px; /* Assurez-vous que la largeur est cohérente avec le conteneur principal */
         }
         .related-posts-title {
-          font-size: 1.8rem;
-          margin-bottom: 20px;
           text-align: center;
+          font-size: 1.8rem;
+          margin-bottom: 15px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
         .title-first-letter {
-          color: rgba(229, 7, 73, 1);
+          color: #e5054a;
           font-weight: bold;
           font-size: 2rem;
         }
         .title-rest {
-          color: rgba(3, 112, 225, 1);
+          color: #0370e1;
           font-weight: bold;
+          font-size: 1.8rem;
+          margin-left: 8px;
         }
         .cards-container {
           display: flex;
@@ -257,47 +280,55 @@ const TemoignageDetailPage = ({ temoignage }: { temoignage: any }) => {
           justify-content: center;
         }
         .card {
-          background-color: #ffffff;
+          background: white;
+          border: 1px solid #ddd;
           border-radius: 8px;
           overflow: hidden;
+          width: 100%;
+          max-width: 250px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          width: 250px;
-          text-align: center;
+          transition: transform 0.3s, box-shadow 0.3s;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
         .card-image-container {
-          position: relative;
           width: 100%;
           height: 150px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           overflow: hidden;
+          position: relative;
         }
         .card-image {
-          object-fit: cover;
           width: 100%;
-          height: 100%;
+          height: auto;
+          object-fit: cover;
         }
         .card-content {
           padding: 15px;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          flex-grow: 1;
         }
         .card-title {
-          font-size: 1.2rem;
-          margin: 0;
-          color: #333333;
+          font-size: 1rem;
+          font-weight: bold;
+          margin: 10px 0;
         }
         .read-more-button {
           display: inline-block;
-          margin-top: 10px;
-          font-size: 1rem;
-          color: #0068c8; /* Bleu */
-          text-decoration: none;
-          border: 1px solid #0068c8; /* Bleu */
-          padding: 8px 12px;
+          padding: 8px 16px;
+          font-size: 0.9rem;
+          color: #fff;
+          background-color: #0370e1;
           border-radius: 4px;
-          background-color: #ffffff;
-          transition: background-color 0.3s, color 0.3s;
-        }
-        .read-more-button:hover {
-          background-color: #0068c8; /* Bleu */
-          color: #ffffff;
+          text-decoration: none;
+          text-align: center;
+          margin-top: 10px;
         }
       `}</style>
     </Layout>

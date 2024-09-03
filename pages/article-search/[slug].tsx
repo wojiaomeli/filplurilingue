@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 const ArticlePage = () => {
   const router = useRouter();
-  const { slug } = router.query; // Utiliser slug comme identifiant
+  const { slug } = router.query;
   const [article, setArticle] = useState<any>(null);
   const [category, setCategory] = useState<string>('');
   const [relatedPosts, setRelatedPosts] = useState<any[]>([]);
@@ -20,20 +20,15 @@ const ArticlePage = () => {
           let foundArticle = null;
           let articleType = '';
 
-          // Liste des endpoints à tester avec slug comme paramètre
           const endpoints = [
             `${process.env.NEXT_PUBLIC_API_URL}/api/posts?filters[slug][$eq]=${slug}&populate=*`,
             `${process.env.NEXT_PUBLIC_API_URL}/api/jumelage-scolaires?filters[slug][$eq]=${slug}&populate=*`,
             `${process.env.NEXT_PUBLIC_API_URL}/api/temoignage-videos?filters[slug][$eq]=${slug}&populate=*`
           ];
 
-          // Tentative de récupération de l'article depuis chaque endpoint
           for (const endpoint of endpoints) {
             const response = await fetch(endpoint);
-            console.log('Endpoint:', endpoint); // Affiche l'URL
-            console.log('Response status:', response.status); // Affiche le code de statut
             const data = await response.json();
-            console.log('Data:', data); // Affiche les données retournées par l'API
 
             if (data.data && data.data.length > 0) {
               foundArticle = data.data[0];
@@ -51,12 +46,10 @@ const ArticlePage = () => {
           const currentCategory = articleAttributes.category?.data?.attributes?.nom || '';
           setCategory(currentCategory);
 
-          // Récupération des articles connexes
           const relatedEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/${articleType}?filters[category][nom][$eq]=${currentCategory}&filters[slug][$ne]=${slug}&sort[createdAt]=desc&pagination[limit]=4&populate=*`;
           const relatedResponse = await fetch(relatedEndpoint);
           if (relatedResponse.ok) {
             const relatedData = await relatedResponse.json();
-            console.log('Related Data:', relatedData); // Affiche les données connexes
             setRelatedPosts(relatedData.data);
           } else {
             throw new Error('Erreur lors de la récupération des articles connexes');
@@ -79,15 +72,15 @@ const ArticlePage = () => {
   const getCategoryColor = (categoryName: string) => {
     switch (categoryName) {
       case 'Méthodologie':
-        return '#e5054a'; // redFil
+        return '#e5054a'; // red
       case 'Promotion':
-        return '#7eb301'; // greenF
+        return '#7eb301'; // green
       case 'Classe':
-        return '#fdcd00'; // yellowF
+        return '#fdcd00'; // yellow
       case 'Pays':
-        return '#5d0073'; // purplF
+        return '#5d0073'; // purple
       default:
-        return '#e5054a'; // Couleur par défaut
+        return '#e5054a'; // default color
     }
   };
 
@@ -154,26 +147,20 @@ const ArticlePage = () => {
           border-radius: 8px 8px 0 0;
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
-          height: 200px; /* Hauteur ajustée pour contenir le titre et la date */
+          justify-content: center;
+          align-items: flex-start;
+          height: 200px;
         }
 
         .title {
           font-size: 2.5rem;
           font-weight: bold;
           margin: 0;
-          position: absolute;
-          bottom: 40px; /* Positionné au bas avec un espace ajusté */
-          left: 20px; /* Aligné à gauche avec un espace ajusté */
         }
 
         .date {
           font-size: 1rem;
-          color: #ffffff;
           margin: 0;
-          position: absolute;
-          bottom: 20px; /* Positionné au bas avec un espace ajusté */
-          right: 20px; /* Aligné à droite avec un espace ajusté */
         }
 
         .content-container {
@@ -181,6 +168,8 @@ const ArticlePage = () => {
           background-color: white;
           border-radius: 8px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          margin-top: -10px;
+          border-top: 4px solid #e6e6e6;
         }
 
         .image-container {
@@ -207,20 +196,29 @@ const ArticlePage = () => {
           font-size: 1.5rem;
           font-weight: bold;
           margin-bottom: 20px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         .title-first-letter {
-          color: #0070f3;
+          color: #e5054a;
+          font-weight: bold;
+          font-size: 2rem;
         }
 
         .title-rest {
-          color: #000;
+          color: #0370e1;
+          font-weight: bold;
+          font-size: 1.8rem;
+          margin-left: 8px;
         }
 
         .cards-container {
           display: flex;
           flex-wrap: wrap;
           gap: 20px;
+          justify-content: center;
         }
 
         .card {
@@ -230,12 +228,14 @@ const ArticlePage = () => {
           width: 100%;
           max-width: 300px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          transition: transform 0.3s, box-shadow 0.3s;
         }
 
         .card-image-container {
           position: relative;
           width: 100%;
           height: 180px;
+          overflow: hidden;
         }
 
         .card-image {

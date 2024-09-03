@@ -84,7 +84,7 @@ const Footer = () => {
 
       {/* Trait en bas avec logotype centré */}
       <div className="relative">
-      <div className="bg-customBlue h-0.5 w-1/2 mx-auto mb-1"></div>
+        <div className="bg-customBlue h-0.5 w-1/2 mx-auto mb-1"></div>
         <div className="absolute inset-0 flex justify-center items-center">
           <a href="https://lefilplurilingue.org/" target="_blank" rel="noopener noreferrer">
             <Image

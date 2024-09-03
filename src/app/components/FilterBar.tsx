@@ -80,7 +80,7 @@ const FilterBar = ({ onSelect }) => {
           <div css={dropdownItemStyles} onClick={() => handleFilterSelect('Méthodologie')}>Méthodologie</div>
           <div css={dropdownItemStyles} onClick={() => handleFilterSelect('Portrait')}>Portrait</div>
           <div css={dropdownItemStyles} onClick={() => handleFilterSelect('Rapport de recherche')}>Rapport de recherche</div>
-          <div css={dropdownItemStyles} onClick={() => handleFilterSelect('Sytographie')}>Sytographie</div>
+          <div css={dropdownItemStyles} onClick={() => handleFilterSelect('Sytographie')}>sitographie</div>
         </div>
       )}
     </div>

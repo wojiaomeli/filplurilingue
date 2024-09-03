@@ -1,15 +1,15 @@
 import React from 'react';
-import Layout from '../src/app/components/Layout'; // Assurez-vous que le chemin vers votre composant Layout est correct
+import Layout from '../src/app/components/Layout';
 
 const styles = {
   container: {
     fontFamily: 'Arial, sans-serif',
-    margin: '20px',
+    margin: '20px auto',
     padding: '20px',
-    maxWidth: '800px',
-    backgroundColor: '#fffff',
+    maxWidth: '900px',
+    backgroundColor: '#ffffff',
     borderRadius: '8px',
-    boxShadow: '0 4px 4px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     textAlign: 'justify',
   },
   header: {
@@ -21,23 +21,37 @@ const styles = {
     marginBottom: '20px',
   },
   title: {
-    fontSize: '2em',
-    marginBottom: '10px',
+    fontSize: '2.5em',
+    marginBottom: '15px',
     color: 'rgba(3, 112, 225, 1)',
+    fontWeight: 'bold',
   },
   section: {
     marginBottom: '20px',
   },
   sectionTitle: {
-    fontSize: '1.2em',
+    fontSize: '1.5em',
     marginBottom: '10px',
     fontWeight: 'bold',
     color: '#333',
   },
   paragraph: {
-    marginBottom: '10px',
+    marginBottom: '15px',
     lineHeight: '1.6',
     color: '#555',
+  },
+  // Responsive adjustments
+  '@media (max-width: 768px)': {
+    container: {
+      margin: '10px',
+      padding: '10px',
+    },
+    title: {
+      fontSize: '2em',
+    },
+    sectionTitle: {
+      fontSize: '1.2em',
+    },
   },
 };
 
@@ -73,8 +87,7 @@ const LegalNotice: React.FC = () => {
             <strong>Personnalité morale :</strong> Établissement public national à caractère administratif sous tutelle du ministère de l’Éducation nationale.
           </p>
           <p style={styles.paragraph}>
-            <strong>Adresse du siège social :</strong> 1, avenue Léon Journault
-92318 Sèvres cedex
+            <strong>Adresse du siège social :</strong> 1, avenue Léon Journault 92318 Sèvres cedex
           </p>
           <p style={styles.paragraph}>
             Téléphone : 01 45 07 60 00
@@ -84,8 +97,7 @@ const LegalNotice: React.FC = () => {
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>3. Hébergement</h2>
           <p style={styles.paragraph}>
-            Le site est hébergé par France Education International, dont le siège social est situé à CIEP 1, avenue Léon Journault
-            92318 Sèvres cedex.
+            Le site est hébergé par France Education International, dont le siège social est situé à CIEP 1, avenue Léon Journault 92318 Sèvres cedex.
           </p>
         </div>
 
@@ -116,8 +128,7 @@ const LegalNotice: React.FC = () => {
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>7. RGPD et traitement des données</h2>
           <p style={styles.paragraph}>
-            Conformément au Règlement Général sur la Protection des Données (RGPD), nous vous informons que les données personnelles collectées sur ce site font l'objet d'un traitement automatisé pour les finalités suivantes :  facilitation du jumelage scolaire, gestion des contacts, et communication avec les établissements partenaires.
-        
+            Conformément au Règlement Général sur la Protection des Données (RGPD), nous vous informons que les données personnelles collectées sur ce site font l'objet d'un traitement automatisé pour les finalités suivantes : facilitation du jumelage scolaire, gestion des contacts, et communication avec les établissements partenaires.
           </p>
           <p style={styles.paragraph}>
             Les données collectées sont destinées à France Education International et ne seront en aucun cas transmises à des tiers sans votre consentement préalable, sauf obligation légale.
@@ -130,7 +141,7 @@ const LegalNotice: React.FC = () => {
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>8. Contact</h2>
           <p style={styles.paragraph}>
-            Pour toute question ou information sur les mentions légales, vous pouvez nous contacter à l'adresse suivante : filplurilingue@gmail.com .
+            Pour toute question ou information sur les mentions légales, vous pouvez nous contacter à l'adresse suivante : filplurilingue@gmail.com.
           </p>
         </div>
       </div>
